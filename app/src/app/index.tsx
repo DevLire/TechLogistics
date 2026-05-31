@@ -1,23 +1,13 @@
-// index.tsx
 import { ImageBackground } from 'expo-image';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ActivityIndicator, View } from 'react-native';
 import { ThemedText } from '@/presentation/components/ThemedText';
-import { useEffect } from 'react';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
 
 const bgLight = require('@/assets/loginLightBg.png');
 const bgDark = require('@/assets/loginDarkBg.png');
 
 const TechLogisticsApp = () => {
   const colorScheme = useColorScheme();
-  const { authStatus, stopAppLoading } = useAuthStore();
-
-  useEffect(() => {
-    if (authStatus === 'checking') return;
-    stopAppLoading();
-  }, [authStatus, stopAppLoading]);
-
   return (
     <>
       <ImageBackground

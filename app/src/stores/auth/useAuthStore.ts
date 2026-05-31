@@ -12,27 +12,24 @@ type AuthState = {
   user: UserData | null;
   token: string | null;
   authStatus: AuthStatus;
-  isAppLoading: boolean;
 
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   checkAuthStatus: () => Promise<boolean>;
-  stopAppLoading: () => void;
+  revalidatePassword: (password: string) => Promise<boolean>;
 };
 
-export const useAuthStore = create<AuthState>()((set) => ({
+export const useAuthStore = create<AuthState>()((set, get) => ({
   user: null,
   token: null,
   authStatus: 'checking',
-  isAppLoading: true,
 
   // Actions
   login: async (email: string, password: string) => {
     try {
       const data = await loginAction(email, password);
       await SecureStore.setItemAsync('token', data.token);
-      await SecureStore.setItemAsync('rol', data.user.rol);
 
       set({
         user: data.user,
@@ -44,15 +41,17 @@ export const useAuthStore = create<AuthState>()((set) => ({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       await SecureStore.deleteItemAsync('token');
-      await SecureStore.deleteItemAsync('rol');
-      set({ user: null, token: null, authStatus: 'not-authenticated' });
+      set({
+        user: null,
+        token: null,
+        authStatus: 'not-authenticated',
+      });
       return false;
     }
   },
 
   logout: async () => {
     await SecureStore.deleteItemAsync('token');
-    await SecureStore.deleteItemAsync('rol');
     set({ user: null, token: null, authStatus: 'not-authenticated' });
   },
 
@@ -60,7 +59,6 @@ export const useAuthStore = create<AuthState>()((set) => ({
     try {
       const { user, token } = await checkAuthAction();
       await SecureStore.setItemAsync('token', token);
-      await SecureStore.setItemAsync('rol', user.rol);
       set({
         user: user,
         token: token,
@@ -69,11 +67,10 @@ export const useAuthStore = create<AuthState>()((set) => ({
       return true;
     } catch (error) {
       console.warn(error);
-      await SecureStore.deleteItemAsync('rol');
       await SecureStore.deleteItemAsync('token');
       set({
-        user: undefined,
-        token: undefined,
+        user: null,
+        token: null,
         authStatus: 'not-authenticated',
       });
 
@@ -81,7 +78,17 @@ export const useAuthStore = create<AuthState>()((set) => ({
     }
   },
 
-  stopAppLoading: async () => {
-    set({ isAppLoading: false });
+  revalidatePassword: async (password: string) => {
+    try {
+      const email = get().user!.email;
+      if (!email) return false;
+      const data = await loginAction(email, password);
+      await SecureStore.setItemAsync('token', data.token);
+      set({ token: data.token });
+      return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return false;
+    }
   },
 }));

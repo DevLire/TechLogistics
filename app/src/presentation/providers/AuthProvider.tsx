@@ -7,7 +7,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     checkAuthStatus();
-  }, [checkAuthStatus]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <>{children}</>;
 };

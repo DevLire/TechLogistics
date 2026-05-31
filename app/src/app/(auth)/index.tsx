@@ -27,7 +27,7 @@ const LoginScreen = () => {
     email: '',
     password: '',
   });
-  const [isSubmiting, setIsSubmiting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async () => {
     if (!form.email.trim() || !form.password.trim()) {
@@ -49,7 +49,7 @@ const LoginScreen = () => {
       return;
     }
     try {
-      setIsSubmiting(true);
+      setIsSubmitting(true);
       const isValid = await login(form.email, form.password);
 
       if (!isValid) {
@@ -63,7 +63,7 @@ const LoginScreen = () => {
       console.error(error);
       toast.error('Error inesperado', { description: 'Inténtalo de nuevo' });
     } finally {
-      setIsSubmiting(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -120,11 +120,11 @@ const LoginScreen = () => {
         </View>
         <View className="mt-10 items-center px-20">
           <ThemedButton
-            disabled={isSubmiting}
-            loading={isSubmiting}
+            disabled={isSubmitting}
+            loading={isSubmitting}
             onPress={handleLogin}
           >
-            {isSubmiting ? 'Cargando...' : 'Iniciar sesión'}
+            {isSubmitting ? 'Cargando...' : 'Iniciar sesión'}
           </ThemedButton>
         </View>
 

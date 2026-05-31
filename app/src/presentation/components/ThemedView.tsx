@@ -25,12 +25,10 @@ export const ThemedView = ({
 
   const classes = className.split(' ');
   const hasBgClass = classes.some((cls) => cls.startsWith('bg-'));
-  const hasFlexClass = classes.some(
-    (cls) => cls.startsWith('flex-') || cls === 'flex' || cls.startsWith('h-')
-  );
 
   const hasPaddingTop = classes.some(
-    (cls) => cls.startsWith('pt-') || cls.startsWith('p-')
+    (cls) =>
+      cls.startsWith('pt-') || cls.startsWith('py-') || cls.startsWith('p-')
   );
 
   return (
@@ -43,7 +41,6 @@ export const ThemedView = ({
             : !hasBgClass
               ? themeBackgroundColor
               : undefined,
-          flex: hasFlexClass ? undefined : 1,
           paddingTop: safe ? top : hasPaddingTop ? undefined : 0,
           marginHorizontal: margin ? 10 : 0,
         },

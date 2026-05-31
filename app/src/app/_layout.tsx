@@ -19,15 +19,16 @@ import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { AuthProvider } from '@/presentation/providers/AuthProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient();
+
 const RootLayout = () => {
   const colorScheme = useColorScheme();
   const [assets, errorAssets] = useAssets([
     require('@/assets/loginLightBg.png'),
     require('@/assets/loginDarkBg.png'),
   ]);
-  const { authStatus, isAppLoading, stopAppLoading } = useAuthStore();
+  const { authStatus } = useAuthStore();
   const backgroundColor = useTheme({}, 'background');
-  const queryClient = new QueryClient();
 
   const [fontsLoaded, error] = useFonts({
     // INTER
@@ -50,11 +51,10 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    if (isAppLoading) return;
-
+    if (authStatus === 'checking') return;
     if (authStatus === 'authenticated') router.replace('/home');
     if (authStatus === 'not-authenticated') router.replace('/(auth)');
-  }, [authStatus, isAppLoading]);
+  }, [authStatus]);
 
   useEffect(() => {
     if (error || errorAssets) throw error;
@@ -85,9 +85,9 @@ const RootLayout = () => {
                   animation: 'ios_from_right',
                 }}
               />
-              <Toaster position="bottom-center" />
             </AuthProvider>
           </PaperProvider>
+          <Toaster position="bottom-center" />
         </ThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
