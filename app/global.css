@@ -23,51 +23,54 @@
     --font-poppins-medium: "Poppins-Medium";
     --font-poppins-bold: "Poppins-Bold";
 
-    /* MODO CLARO */
+    /* MODO CLARO (Cero fatiga visual) */
     --color-primary: #00a343;
-    --color-secondary: #e2e8f0;
+    /* 🌟 Un gris estructurado para bordes sutiles que no griten */
+    --color-secondary: #d1d7e0;
     --color-tertiary: #e6f4ea;
-    --color-surface: #ffffff;
+    /* 🌟 Adiós blanco puro. Este es un "Gris Perla/Hueso" súper suave y descansado */
+    --color-surface: #f5f7f9;
     --color-success: #10b981;
     --color-error: #dc2626;
     --color-text: #0f172a;
     --color-text-muted: #64748b;
-    --color-background: #f8fafc;
+    /* 🌟 Fondo base: Un gris azulado opaco que empuja la superficie hacia adelante */
+    --color-background: #eaedf1;
 
-    /* Invertidos */
+    /* Invertidos (Mapeo a tu nuevo Dark Mode) */
     --color-primary-inverse: #00c853;
-    --color-secondary-inverse: #2e4a43;
-    --color-tertiary-inverse: #0e1a1a;
-    --color-surface-inverse: #162624;
+    --color-secondary-inverse: #2a2e2c; /* Grafito con tinte esmeralda para bordes */
+    --color-tertiary-inverse: #1a241f;  /* Grafito menta oscuro para badges */
+    --color-surface-inverse: #1a1a1e;   /* Tu superficie grafito claro */
     --color-success-inverse: #00e676;
     --color-error-inverse: #ff5252;
     --color-text-inverse: #f3f7f6;
-    --color-text-muted-inverse: #6e8582;
-    --color-background-inverse: #0a0f0e;
+    --color-text-muted-inverse: #7c8783; /* Gris atenuado verdoso */
+    --color-background-inverse: #121214; /* Tu fondo grafito profundo */
 }
 
 /* MODO OSCURO */
 @media (prefers-color-scheme: dark) {
     :root {
         --color-primary: #00c853;
-        --color-secondary: #2e4a43;
-        --color-tertiary: #0e1a1a;
-        --color-surface: #162624;
+        --color-secondary: #2a2e2c;
+        --color-tertiary: #1a241f;
+        --color-surface: #1a1a1e;
         --color-success: #00e676;
         --color-error: #ff5252;
         --color-text: #f3f7f6;
-        --color-text-muted: #6e8582;
-        --color-background: #0a0f0e;
+        --color-text-muted: #7c8783;
+        --color-background: #121214;
 
-        /* Invertidos */
+        /* Invertidos (Mapeo al Light Mode Ajustado) */
         --color-primary-inverse: #00a343;
-        --color-secondary-inverse: #e2e8f0;
+        --color-secondary-inverse: #d1d7e0;
         --color-tertiary-inverse: #e6f4ea;
-        --color-surface-inverse: #ffffff;
+        --color-surface-inverse: #f5f7f9;
         --color-success-inverse: #10b981;
         --color-error-inverse: #dc2626;
         --color-text-inverse: #0f172a;
         --color-text-muted-inverse: #64748b;
-        --color-background-inverse: #f8fafc;
+        --color-background-inverse: #eaedf1;
     }
 }

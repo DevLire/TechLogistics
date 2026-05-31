@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native-paper';
-import { ImageBackground, Image } from 'expo-image';
+import { ImageBackground } from 'expo-image';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemedText } from '@/presentation/components/ThemedText';
 import { useState, useEffect } from 'react';
@@ -18,6 +18,7 @@ import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { toast } from 'sonner-native';
 import { router } from 'expo-router';
 import { regularExps } from '@/config/regular-exp';
+import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
 
 const bgLight = require('@/assets/loginLightBg.png');
 const bgDark = require('@/assets/loginDarkBg.png');
@@ -107,17 +108,7 @@ const LoginScreen = () => {
         >
           {/* Imagotipo */}
           <View className="my-20 flex items-center">
-            <View>
-              <Image
-                contentFit="fill"
-                source={imagotipo}
-                style={{
-                  height: 200,
-                  width: 270,
-                  borderRadius: 16,
-                }}
-              />
-            </View>
+            <TechLogisticsImagotipo height={200} width={270} />
           </View>
 
           {/* Bienvenida */}
