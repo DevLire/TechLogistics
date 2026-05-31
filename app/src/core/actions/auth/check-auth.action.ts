@@ -4,7 +4,8 @@ import * as SecureStore from 'expo-secure-store';
 
 export const checkAuthAction = async (): Promise<AuthResponse> => {
   try {
-    await SecureStore.setItemAsync('token', '12');
+    const token = await SecureStore.getItemAsync('token');
+    console.log('check-auth-action-log: ' + token);
     const { data } = await api.get<AuthResponse>('/auth/check-status');
     return data;
   } catch (error) {

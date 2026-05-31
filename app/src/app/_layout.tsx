@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useAssets } from 'expo-asset';
 import { useColorScheme } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -16,11 +17,17 @@ import { Toaster } from 'sonner-native';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { AuthProvider } from '@/presentation/providers/AuthProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const RootLayout = () => {
   const colorScheme = useColorScheme();
-  const { authStatus } = useAuthStore();
+  const [assets, errorAssets] = useAssets([
+    require('@/assets/loginLightBg.png'),
+    require('@/assets/loginDarkBg.png'),
+  ]);
+  const { authStatus, isAppLoading, stopAppLoading } = useAuthStore();
   const backgroundColor = useTheme({}, 'background');
+  const queryClient = new QueryClient();
 
   const [fontsLoaded, error] = useFonts({
     // INTER
@@ -43,17 +50,21 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
+    if (isAppLoading) return;
+
     if (authStatus === 'authenticated') router.replace('/home');
     if (authStatus === 'not-authenticated') router.replace('/(auth)');
-  }, [authStatus]);
+  }, [authStatus, isAppLoading]);
 
   useEffect(() => {
-    if (error) throw error;
-
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+    if (error || errorAssets) throw error;
+    async function hideSplash() {
+      if (fontsLoaded && colorScheme && assets) {
+        await SplashScreen.hideAsync();
+      }
     }
-  }, [fontsLoaded, error]);
+    hideSplash();
+  }, [fontsLoaded, colorScheme, assets, error, errorAssets]);
 
   if (!fontsLoaded && !error) {
     return null;
@@ -62,19 +73,23 @@ const RootLayout = () => {
     <GestureHandlerRootView
       style={{ backgroundColor: backgroundColor, flex: 1 }}
     >
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <PaperProvider>
-          <AuthProvider>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                animation: 'ios_from_right',
-              }}
-            />
-            <Toaster position="bottom-center" />
-          </AuthProvider>
-        </PaperProvider>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
+          <PaperProvider>
+            <AuthProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  animation: 'ios_from_right',
+                }}
+              />
+              <Toaster position="bottom-center" />
+            </AuthProvider>
+          </PaperProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 };

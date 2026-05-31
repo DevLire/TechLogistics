@@ -6,7 +6,6 @@ export const loginAction = async (
   password: string
 ): Promise<AuthResponse> => {
   try {
-    console.log(process.env.EXPO_PUBLIC_API_URL + '/auth/login');
     const { data } = await api.post<AuthResponse>('/auth/login', {
       email: email,
       password: password,
@@ -14,7 +13,7 @@ export const loginAction = async (
 
     return data;
   } catch (error) {
-    console.log(error);
+    console.warn(error);
     throw error;
   }
 };

@@ -12,17 +12,20 @@ type AuthState = {
   user: UserData | null;
   token: string | null;
   authStatus: AuthStatus;
+  isAppLoading: boolean;
 
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   checkAuthStatus: () => Promise<boolean>;
+  stopAppLoading: () => void;
 };
 
 export const useAuthStore = create<AuthState>()((set) => ({
   user: null,
   token: null,
   authStatus: 'checking',
+  isAppLoading: true,
 
   // Actions
   login: async (email: string, password: string) => {
@@ -56,8 +59,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
   checkAuthStatus: async () => {
     try {
       const { user, token } = await checkAuthAction();
-      console.log(user, token);
-      await SecureStore.setItemAsync('token', user.rol);
+      await SecureStore.setItemAsync('token', token);
       await SecureStore.setItemAsync('rol', user.rol);
       set({
         user: user,
@@ -66,7 +68,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
       });
       return true;
     } catch (error) {
-      console.error(error);
+      console.warn(error);
       await SecureStore.deleteItemAsync('rol');
       await SecureStore.deleteItemAsync('token');
       set({
@@ -77,5 +79,9 @@ export const useAuthStore = create<AuthState>()((set) => ({
 
       return false;
     }
+  },
+
+  stopAppLoading: async () => {
+    set({ isAppLoading: false });
   },
 }));
