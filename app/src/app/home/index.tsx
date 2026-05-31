@@ -100,11 +100,7 @@ const HomeScreen = () => {
         </ThemedView>
         {/* Huella */}
         <View className="items-center justify-center">
-          <Ionicons
-            className="color-black dark:color-white"
-            name="finger-print"
-            size={300}
-          />
+          <Ionicons className="color-text" name="finger-print" size={300} />
           <ThemedText
             className="mt-5"
             type="link"
