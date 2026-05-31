@@ -1,16 +1,10 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  View,
-  Keyboard,
-} from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native-paper';
 import { ImageBackground } from 'expo-image';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemedText } from '@/presentation/components/ThemedText';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ThemedInput } from '@/presentation/components/ThemedInput';
 import { ThemedButton } from '@/presentation/components/ThemedButton';
@@ -19,10 +13,10 @@ import { toast } from 'sonner-native';
 import { router } from 'expo-router';
 import { regularExps } from '@/config/regular-exp';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const bgLight = require('@/assets/loginLightBg.png');
 const bgDark = require('@/assets/loginDarkBg.png');
-const imagotipo = require('@/assets/imagotipo.png');
 
 const LoginScreen = () => {
   const colorScheme = useColorScheme();
@@ -34,7 +28,6 @@ const LoginScreen = () => {
     password: '',
   });
   const [isSubmiting, setIsSubmiting] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const handleLogin = async () => {
     if (!form.email.trim() || !form.password.trim()) {
@@ -74,100 +67,80 @@ const LoginScreen = () => {
     }
   };
 
-  useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
-      setKeyboardHeight(e.endCoordinates?.height ?? 0);
-    });
-    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardHeight(0);
-    });
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
-
   return (
     <ImageBackground
       contentFit="cover"
       source={colorScheme === 'light' ? bgLight : bgDark}
       style={{ flex: 1 }}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
+      <KeyboardAwareScrollView
+        enableOnAndroid
+        contentContainerStyle={{ flexGrow: 1 }}
+        extraScrollHeight={120}
+        keyboardShouldPersistTaps="handled"
       >
-        <ScrollView
-          bounces={false}
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingBottom: safeArea.bottom + keyboardHeight + 20,
-          }}
-          keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Imagotipo */}
-          <View className="my-20 flex items-center">
-            <TechLogisticsImagotipo height={200} width={270} />
-          </View>
+        {/* Imagotipo */}
+        <View className="my-20 flex items-center">
+          <TechLogisticsImagotipo height={200} width={270} />
+        </View>
 
-          {/* Bienvenida */}
-          <View className="flex items-center">
-            <ThemedText type="heading">¡Bienvenido!</ThemedText>
-          </View>
+        {/* Bienvenida */}
+        <View className="flex items-center">
+          <ThemedText type="heading">¡Bienvenido!</ThemedText>
+        </View>
 
-          {/* Inputs */}
-          <View className="mx-5 mt-20 gap-y-10">
-            <ThemedInput
-              autoCapitalize="none"
-              iconName="mail-outline"
-              keyboardType="email-address"
-              label="Correo electrónico"
-              value={form.email}
-              onChangeText={(value) => setForm({ ...form, email: value })}
-            />
-            <ThemedInput
-              secureTextEntry
-              autoCapitalize="none"
-              label="Contraseña"
-              left={
-                <TextInput.Icon
-                  icon={({ size, color }) => (
-                    <Ionicons
-                      color={color}
-                      name="lock-closed-outline"
-                      size={size}
-                    />
-                  )}
-                />
-              }
-              value={form.password}
-              onChangeText={(value) => setForm({ ...form, password: value })}
-            />
-          </View>
-          <View className="mt-10 items-center px-20">
-            <ThemedButton
-              disabled={isSubmiting}
-              loading={isSubmiting}
-              onPress={handleLogin}
-            >
-              {isSubmiting ? 'Cargando...' : 'Iniciar sesión'}
-            </ThemedButton>
-          </View>
-
-          <View
-            className="absolute w-full items-center"
-            style={{ bottom: safeArea.bottom + 10 }}
+        {/* Inputs */}
+        <View className="mx-5 mt-20 gap-y-10">
+          <ThemedInput
+            autoCapitalize="none"
+            iconName="mail-outline"
+            keyboardType="email-address"
+            placeholder="Correo electrónico"
+            value={form.email}
+            onChangeText={(value) => setForm({ ...form, email: value })}
+          />
+          <ThemedInput
+            secureTextEntry
+            autoCapitalize="none"
+            left={
+              <TextInput.Icon
+                icon={({ size, color }) => (
+                  <Ionicons
+                    color={color}
+                    name="lock-closed-outline"
+                    size={size}
+                  />
+                )}
+              />
+            }
+            placeholder="Contraseña"
+            value={form.password}
+            onChangeText={(value) => setForm({ ...form, password: value })}
+          />
+        </View>
+        <View className="mt-10 items-center px-20">
+          <ThemedButton
+            disabled={isSubmiting}
+            loading={isSubmiting}
+            onPress={handleLogin}
           >
-            <ThemedText
-              className="text-text-inverse dark:text-text"
-              type="normal"
-            >
-              Todos los derechos reservados ©
-            </ThemedText>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+            {isSubmiting ? 'Cargando...' : 'Iniciar sesión'}
+          </ThemedButton>
+        </View>
+
+        {/* Derechos */}
+        <View
+          className="absolute w-full items-center"
+          style={{ bottom: safeArea.bottom + 10 }}
+        >
+          <ThemedText
+            className="text-text-inverse dark:text-text"
+            type="normal"
+          >
+            Todos los derechos reservados ©
+          </ThemedText>
+        </View>
+      </KeyboardAwareScrollView>
     </ImageBackground>
   );
 };
