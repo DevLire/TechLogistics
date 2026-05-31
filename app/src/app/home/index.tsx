@@ -1,8 +1,6 @@
 import { ThemedView } from '@/presentation/components/ThemedView';
 import { ThemedText } from '@/presentation/components/ThemedText';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useQuery } from '@tanstack/react-query';
-import { getUserByIdAction } from '@/core/actions/user/get-user-by-id.action';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { TouchableOpacity, View } from 'react-native';
@@ -18,11 +16,6 @@ const HomeScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: userData } = useQuery({
-    queryKey: ['user', user?.id_usuario],
-    queryFn: () => getUserByIdAction(user?.id_usuario ?? 0),
-  });
-  console.log(userData?.data + ' usuario');
 
   const hours = new Date().getHours();
   const labelBienvenida =
