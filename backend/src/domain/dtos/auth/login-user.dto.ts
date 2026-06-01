@@ -16,13 +16,13 @@ export class LoginUserDto {
     if (!email || !regularExps.email.test(email))
       errors.email = 'El email no es válido';
 
-    if (!password.trim()) {
+    if (!password) {
       errors.password = 'El campo "password" es obligatorio.';
     } else if (password.trim().length < 6) {
       errors.password = 'Debe tener al menos 6 caracteres.';
     }
 
-    if (!deviceId.trim()) {
+    if (!deviceId) {
       errors.deviceId = 'Se requiere proporcionar un Device ID';
     }
 
