@@ -98,13 +98,33 @@ export class AuthController {
     const user = (req as any).user;
     const { password, ...userEntity } = user;
 
-    // Generamos un nuevo token para refrescar la sesión del usuario
+    const deviceId = req.headers['x-device-id'];
+
+    let isDeviceRegistered = false;
+
+    // Evaluar si el celular existe en la base de datos
+    if (deviceId) {
+      const dispositivoExistente =
+        await prisma.dispositivo_Autorizado.findUnique({
+          where: { dispositivo_id: String(deviceId) },
+        });
+
+      isDeviceRegistered =
+        dispositivoExistente !== null &&
+        dispositivoExistente.id_usuario === user.id_usuario;
+    }
+
     const token = await JwtAdapter.generateToken({ id: user.id_usuario });
 
     return res.json({
       status: 'success',
       user: userEntity,
       token: token,
+      security: {
+        isDeviceRegistered: isDeviceRegistered,
+        canRegisterDevice: user.puede_registrar_dispositivo,
+        allowPasswordFallback: user.permite_fallback_password,
+      },
       errors: formatErrors(null),
     });
   };
