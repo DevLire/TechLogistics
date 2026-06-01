@@ -4,7 +4,7 @@ export class LoginUserDto {
   private constructor(
     public readonly email: string,
     public readonly password: string,
-    public readonly deviceId: string
+    public readonly deviceId?: string
   ) {}
 
   static create(props: {
@@ -22,10 +22,6 @@ export class LoginUserDto {
       errors.password = 'Debe tener al menos 6 caracteres.';
     }
 
-    if (!deviceId) {
-      errors.deviceId = 'Se requiere proporcionar un Device ID';
-    }
-
     if (Object.keys(errors).length > 0) return [errors, undefined];
 
     return [
@@ -33,7 +29,7 @@ export class LoginUserDto {
       new LoginUserDto(
         email.toLowerCase().trim(),
         password.trim(),
-        deviceId.trim()
+        deviceId?.trim()
       ),
     ];
   }
