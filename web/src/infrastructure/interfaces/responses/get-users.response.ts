@@ -14,6 +14,8 @@ export interface Datum {
   nombre: string;
   email: string;
   rol: Role;
+  puede_registrar_dispositivo: boolean;
+  permite_fallback_password: boolean;
 }
 
 type Role = 'ADMINISTRADOR' | 'OPERARIO' | 'SUPERVISOR';

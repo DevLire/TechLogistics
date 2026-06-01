@@ -10,6 +10,10 @@ export interface GetUserResponse {
 export interface UserData {
   id_usuario: number;
   nombre: string;
-  rol: string;
+  rol: Role;
   email: string;
+  puede_registrar_dispositivo: boolean;
+  permite_fallback_password: boolean;
 }
+
+type Role = 'ADMINISTRADOR' | 'OPERARIO' | 'SUPERVISOR';
