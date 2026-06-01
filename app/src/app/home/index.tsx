@@ -17,10 +17,7 @@ import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
 
 const HomeScreen = () => {
   const { user, revalidatePassword } = useAuthStore();
-
-  // 🌟 Extraemos la bandera condicional y la función de auditoría
   const { allowPasswordFallback, logAccessAttempt } = useSecurityStore();
-  // 🌟 Extraemos la función de la huella
   const { handleBiometricAuth } = useRegisterDevice();
 
   const textColor = useTheme({}, 'text');
@@ -55,13 +52,14 @@ const HomeScreen = () => {
 
     try {
       setIsSubmitting(true);
-      const isValid = await revalidatePassword(password);
+
+      const { ok, message } = await revalidatePassword(password);
       const deviceId = await getUniqueDeviceId();
 
-      if (!isValid) {
+      if (!ok) {
         await logAccessAttempt(deviceId, 'DENEGADO', 'PASSWORD');
         toast.error('Acceso Denegado', {
-          description: 'Credenciales inválidas',
+          description: message || 'Credenciales inválidas',
         });
         return;
       }
@@ -103,14 +101,12 @@ const HomeScreen = () => {
       />
 
       <ThemedView className="flex-1 gap-10">
-        {/* Card */}
         <ThemedView className="bg-surface items-center justify-center rounded-3xl pt-10">
           <View>
             <TechLogisticsImagotipo height={200} width={270} />
           </View>
         </ThemedView>
 
-        {/* Labels */}
         <ThemedView margin className="flex-none items-center gap-5">
           <ThemedText className="text-3xl font-bold">{`${labelBienvenida}, ${user?.nombre}`}</ThemedText>
           <ThemedText
@@ -122,7 +118,6 @@ const HomeScreen = () => {
           </ThemedText>
         </ThemedView>
 
-        {/* Huella */}
         <View className="items-center justify-center">
           <TouchableOpacity
             activeOpacity={0.7}
