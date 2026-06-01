@@ -8,17 +8,35 @@ export class DispositivosRoutes {
     const router = Router();
     const dispositivoController = new DispositivoController();
 
-    // Middlewares globales
     router.use(AuthMiddleware.validateJWT);
-    router.use(RoleMiddleware.requireAdmin);
 
-    router.get('/', dispositivoController.getDispositivos);
-    router.get('/:id', dispositivoController.getDispositivoById);
-    router.get('/user/:id', dispositivoController.getDispositivosByUserId);
+    router.get(
+      '/',
+      RoleMiddleware.requireAdmin,
+      dispositivoController.getDispositivos
+    );
+    router.get(
+      '/:id',
+      RoleMiddleware.requireAdmin,
+      dispositivoController.getDispositivoById
+    );
+    router.get(
+      '/user/:id',
+      RoleMiddleware.requireAdmin,
+      dispositivoController.getDispositivosByUserId
+    );
+    router.put(
+      '/:id',
+      RoleMiddleware.requireAdmin,
+      dispositivoController.updateDispositivo
+    );
+    router.delete(
+      '/:id',
+      RoleMiddleware.requireAdmin,
+      dispositivoController.deleteDispositivo
+    );
 
     router.post('/', dispositivoController.registerDispositivo);
-    router.put('/:id', dispositivoController.updateDispositivo);
-    router.delete('/:id', dispositivoController.deleteDispositivo);
 
     return router;
   }

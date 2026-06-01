@@ -8,12 +8,18 @@ export class AccesosBiometricosRoutes {
     const router = Router();
     const accesosBiometricosController = new AccesosBiometricosController();
 
-    // Middlewares globales
     router.use(AuthMiddleware.validateJWT);
-    router.use(RoleMiddleware.requireRoles(['SUPERVISOR']));
 
-    router.get('/', accesosBiometricosController.getAccesosBiometricos);
-    router.get('/anomalias', accesosBiometricosController.getAnomalias);
+    router.get(
+      '/',
+      RoleMiddleware.requireRoles(['SUPERVISOR']),
+      accesosBiometricosController.getAccesosBiometricos
+    );
+    router.get(
+      '/anomalias',
+      RoleMiddleware.requireRoles(['SUPERVISOR']),
+      accesosBiometricosController.getAnomalias
+    );
 
     router.post(
       '/verificar',
