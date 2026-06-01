@@ -231,7 +231,7 @@ export default function TerminalOperaciones() {
           <input
             autoFocus
             className={`w-full rounded-xl border border-white/10 bg-[#1a1a1a] px-4 py-3.5 text-sm text-gray-200 transition-all outline-none focus:ring-2 ${colorBordeResaltado}`}
-            placeholder="Buscar producto o escanear código de barras..."
+            placeholder="Buscar producto"
             type="text"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}

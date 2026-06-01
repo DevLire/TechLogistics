@@ -44,7 +44,7 @@ export const routeList: NavItem[] = [
     roles: ['ADMINISTRADOR'],
   },
   {
-    text: 'Reportes',
+    text: 'Historial de Movimientos',
     to: '/reportes',
     roles: ['ADMINISTRADOR', 'SUPERVISOR'],
   },

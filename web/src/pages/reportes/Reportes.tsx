@@ -18,6 +18,14 @@ const OPCIONES_FILTRO: SegmentedControlOption<TipoFiltro>[] = [
   { value: 'SALIDA', label: 'Salida', color: 'red' },
 ];
 
+const formatearMoneda = (valor: number | string): string => {
+  const numero = Number(valor);
+  if (isNaN(numero)) return 'S/ 0,00';
+  const [enteros, decimales] = numero.toFixed(2).split('.');
+  const enterosFormateados = enteros.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return `S/ ${enterosFormateados},${decimales}`;
+};
+
 export default function ReportesMovimientos() {
   const [inputValue, setInputValue] = useState('');
   const [busqueda, setBusqueda] = useState('');
@@ -71,7 +79,6 @@ export default function ReportesMovimientos() {
   const pagination = dataMovimientos?.pagination;
 
   const valorTotalNumber = Number(dataMovimientos?.total_acumulado || 0);
-  const valorTotal = valorTotalNumber.toFixed(2);
 
   const titulo =
     filtroTipo === 'TODOS'
@@ -115,7 +122,7 @@ export default function ReportesMovimientos() {
       header: 'Valor (S/)',
       render: (row) => (
         <span className="font-bold text-[#2ecc71]">
-          S/ {Number(row.total).toFixed(2)}
+          {formatearMoneda(row.total)}
         </span>
       ),
     },
@@ -158,14 +165,19 @@ export default function ReportesMovimientos() {
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <MetricaCard label={labelTotal} valor={`S/ ${valorTotal}`} />
+        <MetricaCard
+          label={labelTotal}
+          valor={formatearMoneda(valorTotalNumber)}
+        />
         <MetricaCard
           label="Total de transacciones"
           valor={dataMovimientos?.total_movimientos.toString() || '0'}
         />
         <MetricaCard
           label="Valor prom. por operación"
-          valor={`S/ ${(valorTotalNumber / (dataMovimientos?.total_movimientos || 1)).toFixed(2)}`}
+          valor={formatearMoneda(
+            valorTotalNumber / (dataMovimientos?.total_movimientos || 1)
+          )}
         />
       </div>
 
