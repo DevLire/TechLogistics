@@ -36,6 +36,7 @@ export class ProductosController {
         whereClause.OR = [
           { nombre: { contains: String(search), mode: 'insensitive' } },
           { codigo_barras: { contains: String(search) } },
+          { proveedor: { nombre_empresa: { contains: String(search), mode: 'insensitive' } } },
         ];
       }
 

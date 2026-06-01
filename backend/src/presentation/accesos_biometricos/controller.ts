@@ -51,6 +51,20 @@ export class AccesosBiometricosController {
               },
             },
           },
+          {
+            dispositivo_autorizado: {
+              nombre_dispositivo: {
+                contains: String(search),
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            metodo_acceso: {
+              contains: String(search),
+              mode: 'insensitive',
+            },
+          },
         ];
       }
 
@@ -178,6 +192,20 @@ export class AccesosBiometricosController {
                 contains: String(search),
                 mode: 'insensitive',
               },
+            },
+          },
+          {
+            dispositivo_autorizado: {
+              nombre_dispositivo: {
+                contains: String(search),
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            metodo_acceso: {
+              contains: String(search),
+              mode: 'insensitive',
             },
           },
         ];
