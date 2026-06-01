@@ -1,13 +1,13 @@
-import { ThemedView } from '@/presentation/components/ThemedView';
-import { ThemedText } from '@/presentation/components/ThemedText';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { TouchableOpacity, View } from 'react-native';
-import { router, Stack } from 'expo-router';
 import { useTheme } from '@/hooks/use-theme';
 import { AuthModal } from '@/presentation/components/auth/AuthModal';
+import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
+import { ThemedText } from '@/presentation/components/ThemedText';
+import { ThemedView } from '@/presentation/components/ThemedView';
+import { useAuthStore } from '@/stores/auth/useAuthStore';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { router, Stack } from 'expo-router';
 import { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import { toast } from 'sonner-native';
 
 const HomeScreen = () => {
@@ -78,7 +78,8 @@ const HomeScreen = () => {
           ),
         }}
       />
-      <View className="flex-1 gap-10">
+
+      <ThemedView className="flex-1 gap-10">
         {/* Card */}
         <ThemedView className="bg-surface items-center justify-center rounded-3xl pt-10">
           <View>
@@ -119,8 +120,7 @@ const HomeScreen = () => {
           onPasswordChange={(value) => setPassword(value)}
           onPress={handleSubmit}
         />
-      </View>
-      <View />
+      </ThemedView>
     </>
   );
 };

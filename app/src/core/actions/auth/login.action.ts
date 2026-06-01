@@ -3,12 +3,14 @@ import type { AuthResponse } from '@/infrastructure/interfaces/responses/auth.re
 
 export const loginAction = async (
   email: string,
-  password: string
+  password: string,
+  deviceId: string
 ): Promise<AuthResponse> => {
   try {
     const { data } = await api.post<AuthResponse>('/auth/login', {
       email: email,
       password: password,
+      deviceId: deviceId,
     });
 
     return data;

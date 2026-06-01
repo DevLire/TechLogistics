@@ -4,6 +4,8 @@ import { create } from 'zustand';
 import { checkAuthAction } from '@/core/actions/auth/check-auth.action';
 import { loginAction } from '@/core/actions/auth/login.action';
 import * as SecureStore from 'expo-secure-store';
+import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
+import { useSecurityStore } from '@/stores/security/useSecurityStore';
 
 type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 
@@ -28,8 +30,13 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   // Actions
   login: async (email: string, password: string) => {
     try {
-      const data = await loginAction(email, password);
+      const deviceId = await getUniqueDeviceId();
+      const data = await loginAction(email, password, deviceId);
       await SecureStore.setItemAsync('token', data.token);
+
+      if (data.security) {
+        useSecurityStore.getState().setSecurityFlags(data.security);
+      }
 
       set({
         user: data.user,
@@ -82,7 +89,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     try {
       const email = get().user!.email;
       if (!email) return false;
-      const data = await loginAction(email, password);
+      const deviceId = await getUniqueDeviceId();
+      const data = await loginAction(email, password, deviceId);
       await SecureStore.setItemAsync('token', data.token);
       set({ token: data.token });
       return true;

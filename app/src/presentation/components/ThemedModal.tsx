@@ -14,6 +14,7 @@ export const ThemedModal = ({
   visible,
   title = '',
   description = '',
+  children,
   ...rest
 }: Props) => {
   return (
@@ -28,6 +29,7 @@ export const ThemedModal = ({
               </ThemedText>
               <ThemedText type="normal">{description}</ThemedText>
             </View>
+            <View>{children}</View>
           </ThemedView>
         </View>
       </Modal>

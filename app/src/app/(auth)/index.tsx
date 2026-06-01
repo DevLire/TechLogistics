@@ -58,7 +58,7 @@ const LoginScreen = () => {
         });
         return;
       }
-      router.replace('/home');
+      router.replace('/');
     } catch (error) {
       console.error(error);
       toast.error('Error inesperado', { description: 'Inténtalo de nuevo' });

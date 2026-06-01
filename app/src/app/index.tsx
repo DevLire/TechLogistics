@@ -5,7 +5,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemedText } from '@/presentation/components/ThemedText';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useDeviceCheckerStore } from '@/stores/device-checker/useDeviceCheckerStore';
+import { useSecurityStore } from '@/stores/security/useSecurityStore';
 
 const bgLight = require('@/assets/loginLightBg.png');
 const bgDark = require('@/assets/loginDarkBg.png');
@@ -13,14 +13,23 @@ const bgDark = require('@/assets/loginDarkBg.png');
 const TechLogisticsApp = () => {
   const colorScheme = useColorScheme();
   const authStatus = useAuthStore((state) => state.authStatus);
-  const deviceStatus = useDeviceCheckerStore((state) => state.deviceStatus);
+  const { isDeviceRegistered, canRegisterDevice } = useSecurityStore();
 
   useEffect(() => {
-    if (authStatus === 'checking' || deviceStatus === 'checking') return;
-    if (deviceStatus === 'blocked') return;
+    if (authStatus === 'checking') return;
 
-    router.replace(authStatus === 'authenticated' ? '/registro' : '/(auth)');
-  }, [authStatus, deviceStatus]);
+    if (authStatus === 'authenticated') {
+      if (isDeviceRegistered) {
+        router.replace('/home');
+      } else if (canRegisterDevice) {
+        router.replace('/registro');
+      } else {
+        router.replace('/home');
+      }
+    } else {
+      router.replace('/(auth)');
+    }
+  }, [authStatus, isDeviceRegistered, canRegisterDevice]);
 
   return (
     <ImageBackground

@@ -1,33 +1,29 @@
 import type { PropsWithChildren } from 'react';
-import { useEffect, useRef } from 'react';
+import { View } from 'react-native';
 import { ImageBackground } from 'expo-image';
-import { ThemedModal } from '@/presentation/components/ThemedModal';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useDeviceCheckerStore } from '@/stores/device-checker/useDeviceCheckerStore';
+
+import { ThemedModal } from '@/presentation/components/ThemedModal';
 import { ThemedButton } from '@/presentation/components/ThemedButton';
+
+import { useAuthStore } from '@/stores/auth/useAuthStore';
+import { useSecurityStore } from '@/stores/security/useSecurityStore';
 
 const bgLight = require('@/assets/loginLightBg.png');
 const bgDark = require('@/assets/loginDarkBg.png');
 
 export const DeviceCheckerProvider = ({ children }: PropsWithChildren) => {
   const colorScheme = useColorScheme();
+
   const authStatus = useAuthStore((state) => state.authStatus);
-  const deviceStatus = useDeviceCheckerStore((state) => state.deviceStatus);
-  const checkDeviceStatus = useDeviceCheckerStore(
-    (state) => state.checkDeviceStatus
-  );
-  const didCheckDevice = useRef(false);
+  const logout = useAuthStore((state) => state.logout);
 
-  useEffect(() => {
-    if (authStatus === 'checking') return;
-    if (didCheckDevice.current) return;
+  const { isDeviceRegistered, canRegisterDevice } = useSecurityStore();
 
-    didCheckDevice.current = true;
-    void checkDeviceStatus();
-  }, [authStatus, checkDeviceStatus]);
+  const isBlocked =
+    authStatus === 'authenticated' && !isDeviceRegistered && !canRegisterDevice;
 
-  if (deviceStatus === 'blocked') {
+  if (isBlocked) {
     return (
       <ImageBackground
         cachePolicy="memory-disk"
@@ -38,10 +34,11 @@ export const DeviceCheckerProvider = ({ children }: PropsWithChildren) => {
       >
         <ThemedModal
           visible
-          description="Consulte con el administrador para poder registrar el dispositivo."
-          title="Este dispositivo no está registrado"
-        />
-        <ThemedButton>Cerrar sesión</ThemedButton>
+          description="Consulte con el administrador para poder habilitar este terminal y registrar su acceso."
+          title="Dispositivo no autorizado"
+        >
+          <ThemedButton onPress={logout}>Cerrar sesión</ThemedButton>
+        </ThemedModal>
       </ImageBackground>
     );
   }
