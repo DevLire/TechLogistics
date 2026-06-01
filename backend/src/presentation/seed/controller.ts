@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../data/posgres'; // Ajusta la ruta a tu cliente de Prisma
+import { prisma } from '../../data/posgres';
 import { formatErrors } from '../utils/formatErrors';
 
-// Función auxiliar para generar fechas aleatorias en el pasado
 const getRandomPastDate = (daysBack: number = 30) => {
   const date = new Date();
   date.setDate(date.getDate() - Math.floor(Math.random() * daysBack));
@@ -22,7 +21,6 @@ export class SeedController {
     try {
       console.log('Limpiando base de datos y reiniciando IDs...');
 
-      // 1. Borrar datos en orden inverso (por las llaves foráneas)
       await prisma.detalle_Movimiento_Producto.deleteMany();
       await prisma.movimiento_Inventario.deleteMany();
       await prisma.acceso_Biometrico.deleteMany();
@@ -32,7 +30,6 @@ export class SeedController {
       await prisma.proveedor.deleteMany();
       await prisma.usuario.deleteMany();
 
-      // 2. Reiniciar los contadores (Secuencias) en PostgreSQL
       const tables = [
         'Usuario',
         'Categoria',
@@ -52,17 +49,79 @@ export class SeedController {
 
       console.log('Iniciando sembrado de datos...');
 
-      // --- DATOS MAESTROS ---
+      // --- 1. USUARIOS (Preparados para probar el flujo del Frontend) ---
+      const usuariosData = [
+        // ID 1: Admin
+        {
+          nombre: 'Igor Pérez',
+          email: 'admin@empresa.com',
+          password: '123456',
+          rol: 'ADMINISTRADOR' as const,
+          activo: true,
+          puede_registrar_dispositivo: true,
+          permite_fallback_password: true,
+        },
+        // ID 2: Supervisor
+        {
+          nombre: 'Juan Perez',
+          email: 'supervisor@empresa.com',
+          password: '123456',
+          rol: 'SUPERVISOR' as const,
+          activo: true,
+          puede_registrar_dispositivo: false,
+          permite_fallback_password: false,
+        },
 
-      const nombresUsuarios = [
-        'Igor Pérez',
-        'Juan Perez',
-        'Maria Garcia',
-        'Carlos Lopez',
-        'Ana Martinez',
-        'Luis Rodriguez',
+        // --- CASOS DE PRUEBA FRONTEND ---
+
+        // ID 3: Operario Normal (Caso 1: Dispositivo registrado, solo huella)
+        {
+          nombre: 'Maria Garcia',
+          email: 'operario@empresa.com',
+          password: '123456',
+          rol: 'OPERARIO' as const,
+          activo: true,
+          puede_registrar_dispositivo: false,
+          permite_fallback_password: false,
+        },
+
+        // ID 4: Operario con Fallback (Caso 2: Dispositivo registrado, usa contraseña)
+        {
+          nombre: 'Carlos Lopez',
+          email: 'carlos.lopez@empresa.com',
+          password: '123456',
+          rol: 'OPERARIO' as const,
+          activo: true,
+          puede_registrar_dispositivo: false,
+          permite_fallback_password: true,
+        },
+
+        // ID 5: Operario Nuevo (Caso 3: Sin dispositivo, pero PUEDE registrar)
+        {
+          nombre: 'Ana Martinez',
+          email: 'ana.martinez@empresa.com',
+          password: '123456',
+          rol: 'OPERARIO' as const,
+          activo: true,
+          puede_registrar_dispositivo: true,
+          permite_fallback_password: false,
+        },
+
+        // ID 6: Operario Bloqueado (Caso 4: Sin dispositivo, NO puede registrar)
+        {
+          nombre: 'Luis Rodriguez',
+          email: 'luis.rodriguez@empresa.com',
+          password: '123456',
+          rol: 'OPERARIO' as const,
+          activo: true,
+          puede_registrar_dispositivo: false,
+          permite_fallback_password: false,
+        },
       ];
 
+      await prisma.usuario.createMany({ data: usuariosData });
+
+      // --- 2. CATEGORÍAS Y PROVEEDORES ---
       const categoriasAlmacen = [
         'Componentes Electrónicos',
         'Herramientas',
@@ -70,6 +129,13 @@ export class SeedController {
         'Equipos de Cómputo',
         'Seguridad Industrial',
       ];
+      await prisma.categoria.createMany({
+        data: categoriasAlmacen.map((cat) => ({
+          nombre: cat,
+          descripcion: `Equipos de ${cat}`,
+          activo: true,
+        })),
+      });
 
       const proveedoresEmpresas = [
         'ElectroGlobal',
@@ -78,146 +144,89 @@ export class SeedController {
         'Importaciones Tecnológicas',
         'Seguridad 360',
       ];
-
-      const productosCatalogo = [
-        {
-          nombre: 'Placa Arduino Uno R3',
-          desc: 'Microcontrolador',
-          precio: 85.5,
-        },
-        { nombre: 'Cable UTP Cat 6', desc: 'Caja x 305m', precio: 120.0 },
-        { nombre: 'Router Cisco', desc: 'Gigabit Empresarial', precio: 450.0 },
-        {
-          nombre: 'Multímetro Digital',
-          desc: 'Medición de precisión',
-          precio: 65.0,
-        },
-        {
-          nombre: 'Casco de Seguridad',
-          desc: 'Clase E, Dieléctrico',
-          precio: 25.0,
-        },
-        {
-          nombre: 'Switch 24 Puertos',
-          desc: 'No administrable',
-          precio: 320.0,
-        },
-        { nombre: 'Sensor de Proximidad', desc: 'Infrarrojo 5V', precio: 15.0 },
-        { nombre: 'Raspberry Pi 4', desc: '4GB RAM', precio: 380.0 },
-        {
-          nombre: 'Kit Destornilladores',
-          desc: 'Precisión 115 en 1',
-          precio: 45.0,
-        },
-        { nombre: 'Cámara IP Domo', desc: 'Resolución 1080p', precio: 110.0 },
-      ];
-
-      // --- INSERCIÓN ---
-
-      // 1. Usuarios (Admin, Operario, Supervisor)
-      const usuariosData = nombresUsuarios.map((nombre, i) => {
-        let email = nombre.toLowerCase().replace(/\s+/g, '.') + '@empresa.com';
-        let rol: 'ADMINISTRADOR' | 'OPERARIO' | 'SUPERVISOR' = 'OPERARIO';
-
-        if (i === 0) {
-          email = 'admin@empresa.com';
-          rol = 'ADMINISTRADOR';
-        } else if (i === 1) {
-          email = 'supervisor@empresa.com';
-          rol = 'SUPERVISOR';
-        } else if (i === 2) {
-          email = 'operario@empresa.com';
-          rol = 'OPERARIO';
-        }
-
-        return { nombre, email, password: '123456', rol, activo: true };
-      });
-      await prisma.usuario.createMany({ data: usuariosData });
-
-      // 2. Categorías
-      await prisma.categoria.createMany({
-        data: categoriasAlmacen.map((cat) => ({
-          nombre: cat,
-          descripcion: `Equipos y materiales de ${cat}`,
-          activo: true,
-        })),
-      });
-
-      // 3. Proveedores
       await prisma.proveedor.createMany({
         data: proveedoresEmpresas.map((prov) => ({
           nombre_empresa: prov,
-          contacto: 'Área Comercial',
-          telefono: `9${Math.floor(10000000 + Math.random() * 90000000)}`,
+          contacto: 'Ventas',
+          telefono: '999888777',
           activo: true,
         })),
       });
 
-      // 4. Productos (Con algunos en STOCK BAJO)
-      const productosData = productosCatalogo.map((prod, i) => {
-        const stockMinimo = 10;
-        const stockActual =
-          i % 3 === 0
-            ? Math.floor(Math.random() * 5) + 2 // Stock bajo
-            : Math.floor(Math.random() * 50) + 20; // Stock normal
+      // --- 3. PRODUCTOS ---
+      const productosCatalogo = [
+        { nombre: 'Placa Arduino Uno R3', precio: 85.5 },
+        { nombre: 'Cable UTP Cat 6', precio: 120.0 },
+        { nombre: 'Router Cisco', precio: 450.0 },
+        { nombre: 'Multímetro Digital', precio: 65.0 },
+        { nombre: 'Casco de Seguridad', precio: 25.0 },
+      ];
 
-        return {
-          id_categoria: (i % categoriasAlmacen.length) + 1,
-          id_proveedor: (i % proveedoresEmpresas.length) + 1,
-          codigo_barras: `841${Math.floor(100000000 + Math.random() * 900000000)}`,
+      await prisma.producto.createMany({
+        data: productosCatalogo.map((prod, i) => ({
+          id_categoria: (i % 5) + 1,
+          id_proveedor: (i % 5) + 1,
+          codigo_barras: `84100000${i}`,
           nombre: prod.nombre,
-          descripcion: prod.desc,
           precio_venta: prod.precio,
-          stock_actual: stockActual,
-          stock_minimo: stockMinimo,
+          stock_actual: Math.floor(Math.random() * 50) + 10,
+          stock_minimo: 10,
           activo: true,
-        };
+        })),
       });
-      await prisma.producto.createMany({ data: productosData });
 
-      // 5. Dispositivos Autorizados (Asignados a Operarios y Admins)
-      const dispositivosData = Array.from({ length: 4 }).map((_, i) => ({
-        id_usuario: i === 0 ? 1 : (i % 3) + 3, // Asigna al admin (1) y al resto de operarios
-        dispositivo_id: `DEVICE-${Math.random().toString(36).substring(2, 11).toUpperCase()}`,
-        nombre_dispositivo: `Celular Corporativo ${i + 1}`,
-        fecha_registro: getRandomPastDate(60),
-        activo: true,
-      }));
+      // --- 4. DISPOSITIVOS AUTORIZADOS ---
+      // Solo asignamos dispositivos a los IDs: 1 (Admin), 2 (Supervisor), 3 (Caso 1), y 4 (Caso 2).
+      // Los IDs 5 y 6 se quedan sin dispositivo para probar las pantallas de registro/bloqueo.
+      const usuariosConDispositivo = [1, 2, 3, 4];
+
+      const dispositivosData = usuariosConDispositivo.map(
+        (id_usuario, index) => ({
+          id_usuario,
+          dispositivo_id: `DEVICE-${Math.random().toString(36).substring(2, 11).toUpperCase()}`,
+          nombre_dispositivo:
+            id_usuario === 1 ? 'iPhone Admin' : `Celular Corporativo ${index}`,
+          fecha_registro: getRandomPastDate(60),
+          activo: true,
+        })
+      );
       await prisma.dispositivo_Autorizado.createMany({
         data: dispositivosData,
       });
 
-      // 6. Accesos Biométricos (Historial de aperturas de puertas adaptado a la nueva relación)
-      const accesosData = Array.from({ length: 30 }).map((_, i) => {
-        // Seleccionamos uno de los dispositivos insertados previamente
+      // --- 5. ACCESOS BIOMÉTRICOS ---
+      const accesosData = Array.from({ length: 20 }).map((_, i) => {
         const dispositivoIndex = i % dispositivosData.length;
         const dispositivo = dispositivosData[dispositivoIndex];
 
-        // Al usar TRUNCATE RESTART IDENTITY, sabemos que los IDs de los dispositivos irán del 1 al 4
-        const id_dispositivo_autorizado = dispositivoIndex + 1;
+        // Si el usuario es el ID 4 (el del fallback), sus accesos son por PASSWORD, el resto por HUELLA
+        const esUsuarioFallback = dispositivo.id_usuario === 4;
 
         return {
-          id_usuario: dispositivo.id_usuario, // El usuario que registró el acceso es el dueño del dispositivo
-          id_dispositivo_autorizado: id_dispositivo_autorizado,
+          id_usuario: dispositivo.id_usuario,
+          id_dispositivo_autorizado: dispositivoIndex + 1,
           estado:
-            Math.random() > 0.85
+            Math.random() > 0.9
               ? 'DENEGADO'
               : ('PERMITIDO' as 'DENEGADO' | 'PERMITIDO'),
+          metodo_acceso: esUsuarioFallback
+            ? 'PASSWORD'
+            : ('HUELLA' as 'HUELLA' | 'PASSWORD'),
           fecha_hora: getRandomPastDate(15),
         };
       });
       await prisma.acceso_Biometrico.createMany({ data: accesosData });
 
-      // 7. Movimientos de Inventario y Detalles (Usando inserciones anidadas para precisión)
-      for (let i = 0; i < 20; i++) {
-        const numDetalles = Math.floor(Math.random() * 3) + 1; // 1 a 3 productos por movimiento
+      // --- 6. MOVIMIENTOS ---
+      for (let i = 0; i < 10; i++) {
+        const numDetalles = Math.floor(Math.random() * 2) + 1;
         const detalles = [];
         let totalMovimiento = 0;
 
         for (let j = 0; j < numDetalles; j++) {
           const producto =
             productosCatalogo[(i + j) % productosCatalogo.length];
-          const cantidad = Math.floor(Math.random() * 5) + 1;
+          const cantidad = Math.floor(Math.random() * 3) + 1;
           const subtotal = cantidad * producto.precio;
           totalMovimiento += subtotal;
 
@@ -226,44 +235,32 @@ export class SeedController {
             cantidad: cantidad,
             precio_unitario: producto.precio,
             subtotal: subtotal,
-            observaciones: 'Revisión OK',
           });
         }
 
         await prisma.movimiento_Inventario.create({
           data: {
-            id_usuario: (i % 3) + 2, // Operarios o Supervisor
+            id_usuario: i % 2 === 0 ? 3 : 4, // Los movimientos los hacen los operarios 3 y 4
             tipo: i % 2 === 0 ? 'INGRESO' : 'SALIDA',
             fecha_movimiento: getRandomPastDate(20),
             total: totalMovimiento,
-            detalles: {
-              create: detalles,
-            },
+            detalles: { create: detalles },
           },
         });
       }
 
       console.log('Sembrado completado con éxito.');
 
-      // --- RECUPERAR USUARIOS DE PRUEBA ---
-      const adminUser = await prisma.usuario.findUnique({
-        where: { email: 'admin@empresa.com' },
-      });
-      const supervisorUser = await prisma.usuario.findUnique({
-        where: { email: 'supervisor@empresa.com' },
-      });
-      const operarioUser = await prisma.usuario.findUnique({
-        where: { email: 'operario@empresa.com' },
-      });
-
       return res.status(201).json({
         status: 'success',
-        message: 'Base de datos limpiada y ejecutado el seed correctamente.',
+        message:
+          'Base de datos limpiada y ejecutado el seed con escenarios de prueba.',
         data: {
           testAccounts: {
-            admin: adminUser,
-            supervisor: supervisorUser,
-            operario: operarioUser,
+            caso1_huella: 'operario@empresa.com',
+            caso2_fallback: 'carlos.lopez@empresa.com',
+            caso3_registrar: 'ana.martinez@empresa.com',
+            caso4_bloqueado: 'luis.rodriguez@empresa.com',
           },
         },
         errors: formatErrors(null),
