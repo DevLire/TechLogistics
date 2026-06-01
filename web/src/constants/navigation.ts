@@ -29,8 +29,8 @@ export const routeList: NavItem[] = [
     roles: ['ADMINISTRADOR', 'OPERARIO'],
   },
   {
-    text: 'Ingresos',
-    to: '/inventario/ingresos',
+    text: 'Accesos al Almacén',
+    to: '/accesos',
     roles: ['ADMINISTRADOR'],
   },
   {

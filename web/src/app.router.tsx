@@ -3,7 +3,6 @@ import Login from './pages/auth/Login';
 import Dashboard from './pages/dashboard/Dashboard';
 import TerminalOperaciones from './pages/terminal_operaciones/TerminalOperaciones.tsx';
 import Productos from './pages/productos/Productos';
-import Ingresos from './pages/ingresos/Ingresos';
 import Proveedores from './pages/proveedores/Proveedores';
 import Categorias from './pages/categorias/Categorias';
 import Reportes from './pages/reportes/Reportes';
@@ -15,6 +14,7 @@ import {
   RoleRoute,
 } from './components/routes/ProtectedRoutes';
 import { Usuarios } from '@/pages/usuarios/Usuarios.tsx';
+import { Accesos } from '@/pages/accesos/Accesos.tsx';
 
 export const appRouter = createBrowserRouter([
   // Rutas públicas
@@ -73,14 +73,6 @@ export const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: 'inventario/ingresos',
-        element: (
-          <RoleRoute allowedRoles={['SUPERVISOR']}>
-            <Ingresos />
-          </RoleRoute>
-        ),
-      },
-      {
         path: 'proveedores',
         element: (
           <AdminRoute>
@@ -93,6 +85,14 @@ export const appRouter = createBrowserRouter([
         element: (
           <AdminRoute>
             <Categorias />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: 'accesos',
+        element: (
+          <AdminRoute>
+            <Accesos />
           </AdminRoute>
         ),
       },

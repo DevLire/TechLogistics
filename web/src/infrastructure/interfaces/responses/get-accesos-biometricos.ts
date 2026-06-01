@@ -14,6 +14,7 @@ export interface GetAccesosBiometricosDatum {
   dispositivo_autorizado: DispositivoAutorizado;
   fecha_hora: Date;
   estado: Estado;
+  metodo_acceso: string;
 }
 
 export interface DispositivoAutorizado {
