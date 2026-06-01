@@ -37,28 +37,30 @@ export class AuthController {
           .json({ status: 'fail', message: 'Credenciales incorrectas' });
       }
 
-      // Verificar dispositivo
-      const { deviceId } = req.body;
+      const deviceId = loginDto!.deviceId;
+      let isDeviceRegistered = false;
 
-      // Verificar si alguien más tiene el deviceID
-      const dispositivoExistente =
-        await prisma.dispositivo_Autorizado.findUnique({
-          where: { dispositivo_id: deviceId },
-        });
+      // Solo evaluamos el hardware si la petición envió un deviceId (App Móvil)
+      if (deviceId) {
+        const dispositivoExistente =
+          await prisma.dispositivo_Autorizado.findUnique({
+            where: { dispositivo_id: deviceId },
+          });
 
-      const isDeviceRegistered =
-        dispositivoExistente !== null &&
-        dispositivoExistente.id_usuario === user.id_usuario;
+        isDeviceRegistered =
+          dispositivoExistente !== null &&
+          dispositivoExistente.id_usuario === user.id_usuario;
 
-      // Si el dispositivo existe pero es de OTRO usuario -> 403 Forbidden
-      if (
-        dispositivoExistente &&
-        dispositivoExistente.id_usuario !== user.id_usuario
-      ) {
-        return res.status(403).json({
-          status: 'fail',
-          message: 'Este dispositivo ya está vinculado a otro operario.',
-        });
+        // Si el dispositivo existe pero es de OTRO usuario -> 403 Forbidden
+        if (
+          dispositivoExistente &&
+          dispositivoExistente.id_usuario !== user.id_usuario
+        ) {
+          return res.status(403).json({
+            status: 'fail',
+            message: 'Este dispositivo ya está vinculado a otro operario.',
+          });
+        }
       }
 
       // Generar el JWT usando el ID del usuario
