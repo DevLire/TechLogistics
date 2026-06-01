@@ -221,6 +221,7 @@ export class DispositivoController {
     const [errors, registerDispositivoDto] = RegisterDispositivoDto.create(
       req.body
     );
+
     if (errors)
       return res.status(400).json({
         status: 'fail',
@@ -243,6 +244,19 @@ export class DispositivoController {
         });
       }
 
+      const usuarioAutenticado = (req as any).user;
+      const esAdmin = usuarioAutenticado?.rol === 'ADMINISTRADOR';
+
+      // Si no es admin, DEBE tener la bandera encendida
+      if (!esAdmin && !usuario.puede_registrar_dispositivo) {
+        return res.status(403).json({
+          status: 'fail',
+          message:
+            'No tienes permisos para registrar terminales. Solicita acceso al administrador.',
+          errors: formatErrors(null),
+        });
+      }
+
       const existingDispositivo =
         await prisma.dispositivo_Autorizado.findUnique({
           where: { dispositivo_id: registerDispositivoDto!.dispositivo_id },
@@ -258,20 +272,30 @@ export class DispositivoController {
         });
       }
 
-      const dispositivo = await prisma.dispositivo_Autorizado.create({
-        data: {
-          id_usuario: registerDispositivoDto!.id_usuario,
-          dispositivo_id: registerDispositivoDto!.dispositivo_id,
-          nombre_dispositivo: registerDispositivoDto!.nombre_dispositivo,
-        },
-        select: {
-          dispositivo_id: true,
-          nombre_dispositivo: true,
-        },
-      });
+      // Guardar el dispositivo y apagar la bandera al mismo tiempo
+      const [dispositivo] = await prisma.$transaction([
+        prisma.dispositivo_Autorizado.create({
+          data: {
+            id_usuario: registerDispositivoDto!.id_usuario,
+            dispositivo_id: registerDispositivoDto!.dispositivo_id,
+            nombre_dispositivo: registerDispositivoDto!.nombre_dispositivo,
+          },
+          select: {
+            dispositivo_id: true,
+            nombre_dispositivo: true,
+          },
+        }),
+        // Regresar la bandera a false
+        prisma.usuario.update({
+          where: { id_usuario: usuario.id_usuario },
+          data: { puede_registrar_dispositivo: false },
+        }),
+      ]);
+
       res.status(201).json({
         status: 'success',
-        message: 'Dispositivo registrado correctamente',
+        message:
+          'Dispositivo registrado correctamente. Permiso de registro revocado.',
         data: dispositivo,
         errors: formatErrors(null),
       });

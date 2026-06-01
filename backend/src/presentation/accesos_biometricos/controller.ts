@@ -64,20 +64,23 @@ export class AccesosBiometricosController {
 
           select: {
             id_acceso_biometrico: true,
-            usuario: {
-              select: {
-                id_usuario: true,
-                nombre: true,
-              },
-            },
+            fecha_hora: true,
+            estado: true,
+            metodo_acceso: true,
             dispositivo_autorizado: {
               select: {
                 id_dispositivo_autorizado: true,
                 nombre_dispositivo: true,
+                dispositivo_id: true,
               },
             },
-            fecha_hora: true,
-            estado: true,
+            usuario: {
+              select: {
+                id_usuario: true,
+                nombre: true,
+                rol: true,
+              },
+            },
           },
         }),
 
@@ -194,10 +197,12 @@ export class AccesosBiometricosController {
             id_acceso_biometrico: true,
             fecha_hora: true,
             estado: true,
+            metodo_acceso: true,
             dispositivo_autorizado: {
               select: {
-                dispositivo_id: true,
+                id_dispositivo_autorizado: true,
                 nombre_dispositivo: true,
+                dispositivo_id: true,
               },
             },
             usuario: {
@@ -256,7 +261,8 @@ export class AccesosBiometricosController {
   };
 
   public verificarAccesoBiometrico = async (req: Request, res: Response) => {
-    const { id_usuario, dispositivo_id } = req.body ?? {};
+    const { id_usuario, dispositivo_id, estado, metodo_acceso } =
+      req.body ?? {};
 
     if (!id_usuario || !dispositivo_id) {
       return res.status(400).json({
@@ -276,6 +282,7 @@ export class AccesosBiometricosController {
         dispositivo.id_usuario === Number(id_usuario) &&
         dispositivo.activo;
 
+      // CASO A: Dispositivo inválido o de otro usuario
       if (!esValido) {
         if (dispositivo) {
           await prisma.acceso_Biometrico.create({
@@ -283,11 +290,12 @@ export class AccesosBiometricosController {
               id_usuario: Number(id_usuario),
               id_dispositivo_autorizado: dispositivo.id_dispositivo_autorizado,
               estado: 'DENEGADO',
+              metodo_acceso: metodo_acceso || 'HUELLA',
             },
           });
         }
 
-        console.log(
+        console.warn(
           '\n[ALERTA DE SEGURIDAD] - Intento de acceso desde dispositivo no autorizado o bloqueado.'
         );
 
@@ -299,24 +307,29 @@ export class AccesosBiometricosController {
         });
       }
 
+      // CASO B: Dispositivo válido. Registramos lo que mandó la app
       await prisma.acceso_Biometrico.create({
         data: {
           id_usuario: Number(id_usuario),
           id_dispositivo_autorizado: dispositivo.id_dispositivo_autorizado,
-          estado: 'PERMITIDO',
+          estado: estado || 'PERMITIDO',
+          metodo_acceso: metodo_acceso || 'HUELLA',
         },
       });
 
-      console.log('\n==================================================');
-      console.log(`[TINKERCAD SERIAL] - ORDEN DE APERTURA ENVIADA`);
-      console.log(`Operario ID: ${id_usuario}`);
-      console.log(`Dispositivo: ${dispositivo.nombre_dispositivo}`);
-      console.log(`Hora: ${new Date().toLocaleTimeString()}`);
-      console.log('==================================================\n');
+      if (estado === 'PERMITIDO' || !estado) {
+        console.log('\n==================================================');
+        console.log(`[TINKERCAD SERIAL] - ORDEN DE APERTURA ENVIADA`);
+        console.log(`Operario ID: ${id_usuario}`);
+        console.log(`Dispositivo: ${dispositivo.nombre_dispositivo}`);
+        console.log(`Método: ${metodo_acceso || 'HUELLA'}`);
+        console.log(`Hora: ${new Date().toLocaleTimeString()}`);
+        console.log('==================================================\n');
+      }
 
       return res.status(200).json({
         status: 'success',
-        message: 'Acceso biométrico autorizado. Abriendo cerradura.',
+        message: 'Registro de acceso guardado correctamente.',
         errors: formatErrors(null),
       });
     } catch (error: any) {
