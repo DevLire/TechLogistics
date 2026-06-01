@@ -4,7 +4,7 @@ import type { Column } from '@/components/DataTable.tsx';
 import { DataTable } from '@/components/DataTable.tsx';
 import type { SegmentedControlOption } from '@/components/SegmentedControl';
 import { getAccesosBiometricosAction } from '@/actions/accesos-biometricos.action.ts';
-import type { GetAccesosBiometricosDatum, Estado } from '@/infrastructure/interfaces/responses/get-accesos-biometricos.ts';
+import type { GetAccesosBiometricosDatum } from '@/infrastructure/interfaces/responses/get-accesos-biometricos.ts';
 
 export const Accesos = () => {
   const [pagina, setPagina] = useState(1);
@@ -41,7 +41,7 @@ export const Accesos = () => {
     queryKey: ['accesos', pagina, busqueda, estadoAcceso],
     queryFn: () => {
       // Si la API acepta el filtro de estado, se puede enviar aquí.
-      // Adaptar el Action si es necesario, de momento se asume que no filtra por estado (al no estar definido en Action Options) 
+      // Adaptar el Action si es necesario, de momento se asume que no filtra por estado (al no estar definido en Action Options)
       // o se pasa en el query. Lo omitimos o enviamos si lo acepta.
       return getAccesosBiometricosAction({
         limit: limite,
@@ -64,13 +64,17 @@ export const Accesos = () => {
     {
       header: 'Usuario',
       render: (row) => (
-        <span className="font-medium text-white">{row.usuario?.nombre || '-'}</span>
+        <span className="font-medium text-white">
+          {row.usuario?.nombre || '-'}
+        </span>
       ),
     },
     {
       header: 'Dispositivo',
       render: (row) => (
-        <span className="text-gray-300">{row.dispositivo_autorizado?.nombre_dispositivo || '-'}</span>
+        <span className="text-gray-300">
+          {row.dispositivo_autorizado?.nombre_dispositivo || '-'}
+        </span>
       ),
     },
     {
