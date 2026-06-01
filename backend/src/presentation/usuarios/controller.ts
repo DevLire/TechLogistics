@@ -312,4 +312,41 @@ export class UsuarioController {
       });
     }
   };
+
+  public getUserStats = async (req: Request, res: Response) => {
+    try {
+      const user = (req as any).user;
+
+      const inicioDia = new Date();
+      inicioDia.setHours(0, 0, 0, 0);
+
+      const ultimoAcceso = await prisma.acceso_Biometrico.findFirst({
+        where: {
+          id_usuario: user.id_usuario,
+          estado: 'PERMITIDO',
+        },
+        orderBy: { fecha_hora: 'desc' },
+      });
+
+      const movimientosHoy = await prisma.movimiento_Inventario.count({
+        where: {
+          id_usuario: user.id_usuario,
+          fecha_movimiento: { gte: inicioDia },
+        },
+      });
+
+      return res.json({
+        status: 'success',
+        data: {
+          ultimo_ingreso: ultimoAcceso ? ultimoAcceso.fecha_hora : null,
+          movimientos_hoy: movimientosHoy,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ status: 'error', message: 'Error al obtener estadísticas' });
+    }
+  };
 }

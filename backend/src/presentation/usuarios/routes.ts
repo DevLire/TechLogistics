@@ -10,6 +10,9 @@ export class UsuariosRoutes {
 
     // Middlewares globales
     router.use(AuthMiddleware.validateJWT);
+
+    router.get('/stats', userController.getUserStats);
+
     router.use(RoleMiddleware.requireAdmin);
 
     router.get('/', userController.getUsers);
