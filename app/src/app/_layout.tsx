@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
+import { useAssets } from 'expo-asset';
 import { useColorScheme } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   SplashScreen,
@@ -8,29 +10,32 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from 'expo-router';
-import '../../global.css';
 import { useFonts } from 'expo-font';
+import '../../global.css';
+import { Toaster } from 'sonner-native';
 import { useTheme } from '@/hooks/use-theme';
-import { PaperProvider } from 'react-native-paper';
+import { AuthProvider } from '@/presentation/providers/AuthProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DeviceCheckerProvider } from '@/presentation/providers/DeviceCheckerProvider';
+
+const queryClient = new QueryClient();
 
 const RootLayout = () => {
   const colorScheme = useColorScheme();
+  const [assets, errorAssets] = useAssets([
+    require('@/assets/loginLightBg.png'),
+    require('@/assets/loginDarkBg.png'),
+  ]);
   const backgroundColor = useTheme({}, 'background');
-
   const [fontsLoaded, error] = useFonts({
-    // INTER
     'Inter_18pt-Light': require('@/assets/fonts/Inter_18pt-Light.ttf'),
     'Inter_18pt-Regular': require('@/assets/fonts/Inter_18pt-Regular.ttf'),
     'Inter_18pt-Medium': require('@/assets/fonts/Inter_18pt-Medium.ttf'),
     'Inter_18pt-Bold': require('@/assets/fonts/Inter_18pt-Bold.ttf'),
-
-    // MANROPE
     'Manrope-Light': require('@/assets/fonts/Manrope-Light.ttf'),
     'Manrope-Regular': require('@/assets/fonts/Manrope-Regular.ttf'),
     'Manrope-Medium': require('@/assets/fonts/Manrope-Medium.ttf'),
     'Manrope-Bold': require('@/assets/fonts/Manrope-Bold.ttf'),
-
-    // POPPINS
     'Poppins-Light': require('@/assets/fonts/Poppins-Light.ttf'),
     'Poppins-Regular': require('@/assets/fonts/Poppins-Regular.ttf'),
     'Poppins-Medium': require('@/assets/fonts/Poppins-Medium.ttf'),
@@ -38,27 +43,40 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    if (error) throw error;
+    if (error || errorAssets) throw error;
 
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+    async function hideSplash() {
+      if (fontsLoaded && colorScheme && assets) {
+        await SplashScreen.hideAsync();
+      }
     }
-  }, [fontsLoaded, error]);
+
+    void hideSplash();
+  }, [fontsLoaded, colorScheme, assets, error, errorAssets]);
 
   if (!fontsLoaded && !error) {
     return null;
   }
+
   return (
-    <GestureHandlerRootView
-      style={{ backgroundColor: backgroundColor, flex: 1 }}
-    >
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <PaperProvider>
-          <Stack
-            screenOptions={{ headerShown: false, animation: 'ios_from_right' }}
-          />
-        </PaperProvider>
-      </ThemeProvider>
+    <GestureHandlerRootView style={{ backgroundColor, flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <PaperProvider>
+            <AuthProvider>
+              <DeviceCheckerProvider>
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    animation: 'ios_from_right',
+                  }}
+                />
+              </DeviceCheckerProvider>
+            </AuthProvider>
+          </PaperProvider>
+          <Toaster position="bottom-center" />
+        </ThemeProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 };

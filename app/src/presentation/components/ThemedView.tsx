@@ -2,6 +2,7 @@ import type { ViewProps } from 'react-native';
 import { View } from 'react-native';
 import { useTheme } from '@/hooks/use-theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { cn } from '@/lib/utils';
 
 interface Props extends ViewProps {
   className?: string;
@@ -12,7 +13,7 @@ interface Props extends ViewProps {
 
 export const ThemedView = ({
   style,
-  className,
+  className = '',
   margin = false,
   children,
   safe = false,
@@ -20,17 +21,27 @@ export const ThemedView = ({
   ...rest
 }: Props) => {
   const themeBackgroundColor = useTheme({}, 'background');
-  const backgroundColor = bgColor ?? themeBackgroundColor;
-  const safeArea = useSafeAreaInsets();
+  const { top } = useSafeAreaInsets();
+
+  const classes = className.split(' ');
+  const hasBgClass = classes.some((cls) => cls.startsWith('bg-'));
+
+  const hasPaddingTop = classes.some(
+    (cls) =>
+      cls.startsWith('pt-') || cls.startsWith('py-') || cls.startsWith('p-')
+  );
 
   return (
     <View
-      className={className}
+      className={cn(className)}
       style={[
         {
-          backgroundColor: backgroundColor,
-          flex: 1,
-          paddingTop: safe ? safeArea.top : 0,
+          backgroundColor: bgColor
+            ? bgColor
+            : !hasBgClass
+              ? themeBackgroundColor
+              : undefined,
+          paddingTop: safe ? top : hasPaddingTop ? undefined : 0,
           marginHorizontal: margin ? 10 : 0,
         },
         style,

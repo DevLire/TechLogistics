@@ -1,5 +1,6 @@
 import type { TextProps } from 'react-native';
 import { Text } from 'react-native';
+import { cn } from '@/lib/utils';
 
 type TextType = 'normal' | 'heading' | 'h1' | 'h2' | 'semi-bold' | 'link';
 
@@ -28,13 +29,13 @@ export const ThemedText = ({
         return 'font-bold';
       case 'link':
         return 'font-normal underline';
+      default:
+        return 'font-inter';
     }
   };
 
-  const textClass = getTextClass();
-
   return (
-    <Text className={['text-text', textClass, className].join(' ')} {...rest}>
+    <Text className={cn('text-text', getTextClass(), className)} {...rest}>
       {children}
     </Text>
   );

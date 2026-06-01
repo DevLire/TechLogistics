@@ -7,7 +7,11 @@
     "@expo/vector-icons": "^15.1.1",
     "@tanstack/react-query": "^5.100.14",
     "axios": "^1.16.1",
+    "clsx": "^2.1.1",
     "expo": "~56.0.6",
+    "expo-application": "^56.0.3",
+    "expo-asset": "~56.0.15",
+    "expo-build-properties": "~56.0.16",
     "expo-constants": "~56.0.16",
     "expo-device": "~56.0.4",
     "expo-font": "~56.0.5",
@@ -24,9 +28,11 @@
     "nativewind": "5.0.0-preview.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-hook-form": "^7.76.1",
     "react-native": "0.85.3",
     "react-native-css": "^3.0.7",
     "react-native-gesture-handler": "~2.31.1",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-paper": "^5.15.3",
     "react-native-reanimated": "4.3.1",
     "react-native-safe-area-context": "~5.7.0",
@@ -34,6 +40,8 @@
     "react-native-svg": "15.15.4",
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.8.3",
+    "sonner-native": "^0.25.1",
+    "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.13"
   },
   "devDependencies": {
@@ -58,10 +66,11 @@
   "scripts": {
     "start": "expo start --tunnel",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
   },
-  "private": true
+  "private": true,
+  "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1"
 }

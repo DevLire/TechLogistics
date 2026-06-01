@@ -6,7 +6,6 @@ const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
-// TODO: Interceptores
 api.interceptors.request.use(async (config) => {
   const token = await SecureStore.getItemAsync('token');
   if (token) {

@@ -10,50 +10,50 @@ import { Platform } from 'react-native';
 export const Colors = {
   light: {
     primary: '#00a343',
-    secondary: '#e2e8f0',
+    secondary: '#d1d7e0',
     tertiary: '#e6f4ea',
-    surface: '#ffffff',
+    surface: '#f5f7f9',
     success: '#10b981',
     error: '#dc2626',
     text: '#0f172a',
     textMuted: '#64748b',
-    background: '#f8fafc',
+    background: '#eaedf1',
 
-    // Colores del modo oscuro disponibles aquí
+    // Colores del modo oscuro
     inverse: {
       primary: '#00c853',
-      secondary: '#2e4a43',
-      tertiary: '#0e1a1a',
-      surface: '#162624',
+      secondary: '#2a2e2c',
+      tertiary: '#1a241f',
+      surface: '#1a1a1e',
       success: '#00e676',
       error: '#ff5252',
       text: '#f3f7f6',
-      textMuted: '#6e8582',
-      background: '#0a0f0e',
+      textMuted: '#7c8783',
+      background: '#121214',
     },
   },
   dark: {
     primary: '#00c853',
-    secondary: '#2e4a43',
-    tertiary: '#0e1a1a',
-    surface: '#162624',
+    secondary: '#2a2e2c',
+    tertiary: '#1a241f',
+    surface: '#1a1a1e',
     success: '#00e676',
     error: '#ff5252',
     text: '#f3f7f6',
-    textMuted: '#6e8582',
-    background: '#0a0f0e',
+    textMuted: '#7c8783',
+    background: '#121214',
 
-    // Colores del modo claro disponibles aquí
+    // Colores del modo claro
     inverse: {
       primary: '#00a343',
-      secondary: '#e2e8f0',
+      secondary: '#d1d7e0',
       tertiary: '#e6f4ea',
-      surface: '#ffffff',
+      surface: '#f5f7f9',
       success: '#10b981',
       error: '#dc2626',
       text: '#0f172a',
       textMuted: '#64748b',
-      background: '#f8fafc',
+      background: '#eaedf1',
     },
   },
 } as const;

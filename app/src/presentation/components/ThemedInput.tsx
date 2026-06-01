@@ -3,6 +3,7 @@ import { TextInput } from 'react-native-paper';
 import { useTheme } from '@/hooks/use-theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface Props extends ComponentProps<typeof TextInput> {
   className?: string;
@@ -10,8 +11,9 @@ interface Props extends ComponentProps<typeof TextInput> {
 }
 
 export const ThemedInput = ({
-  className,
+  className = '',
   iconName,
+  style,
   onFocus,
   onBlur,
   ...rest
@@ -23,9 +25,26 @@ export const ThemedInput = ({
 
   const [isFocused, setIsFocused] = useState(false);
 
+  const classes = className.split(' ');
+  const hasBgClass = classes.find((cls) => cls.startsWith('bg-'));
+  const hasRoundedClass = classes.some((cls) => cls.startsWith('rounded-'));
+
+  const getBackgroundColor = () => {
+    if (hasBgClass) {
+      return hasBgClass.replace('bg-', '');
+    }
+    return themeSurface;
+  };
+
+  const finalBgColor = getBackgroundColor();
+  const finalBorderRadius = hasRoundedClass ? undefined : 14;
+
   return (
     <TextInput
-      className={`font-inter text-text ${className ?? ''}`}
+      className={cn('font-inter text-text', className)}
+      contentStyle={{
+        borderRadius: finalBorderRadius,
+      }}
       left={
         iconName ? (
           <TextInput.Icon
@@ -38,19 +57,24 @@ export const ThemedInput = ({
       }
       mode="outlined"
       outlineStyle={{
-        borderRadius: 14,
+        borderRadius: finalBorderRadius,
         borderColor: isFocused ? themePrimary : themeOutline,
         borderWidth: isFocused ? 2 : 1,
+        backgroundColor: finalBgColor,
       }}
-      style={{
-        fontSize: 15,
-        backgroundColor: themeSurface,
-      }}
+      style={[
+        {
+          fontSize: 15,
+          backgroundColor: finalBgColor,
+          borderRadius: finalBorderRadius,
+        },
+        style,
+      ]}
       theme={{
         colors: {
           onSurfaceVariant: themeTextMuted,
           primary: themePrimary,
-          background: themeSurface,
+          background: finalBgColor,
         },
       }}
       onBlur={(e) => {
