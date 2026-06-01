@@ -50,6 +50,8 @@ export class UsuarioController {
             nombre: true,
             email: true,
             rol: true,
+            puede_registrar_dispositivo: true,
+            permite_fallback_password: true,
           },
         }),
         prisma.usuario.count({ where: whereClause }),
@@ -112,6 +114,8 @@ export class UsuarioController {
           nombre: true,
           rol: true,
           email: true,
+          puede_registrar_dispositivo: true,
+          permite_fallback_password: true,
         },
       });
 
@@ -171,6 +175,8 @@ export class UsuarioController {
           nombre: true,
           rol: true,
           email: true,
+          puede_registrar_dispositivo: true,
+          permite_fallback_password: true,
         },
       });
       res.status(201).json({
@@ -297,6 +303,8 @@ export class UsuarioController {
           nombre: true,
           rol: true,
           email: true,
+          puede_registrar_dispositivo: true,
+          permite_fallback_password: true,
         },
       });
       return res.json({
