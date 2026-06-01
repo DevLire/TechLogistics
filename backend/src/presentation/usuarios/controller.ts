@@ -317,9 +317,6 @@ export class UsuarioController {
     try {
       const user = (req as any).user;
 
-      const inicioDia = new Date();
-      inicioDia.setHours(0, 0, 0, 0);
-
       const ultimoAcceso = await prisma.acceso_Biometrico.findFirst({
         where: {
           id_usuario: user.id_usuario,
@@ -328,12 +325,15 @@ export class UsuarioController {
         orderBy: { fecha_hora: 'desc' },
       });
 
-      const movimientosHoy = await prisma.movimiento_Inventario.count({
-        where: {
-          id_usuario: user.id_usuario,
-          fecha_movimiento: { gte: inicioDia },
-        },
-      });
+      const resultMovimientos = await prisma.$queryRaw<{ count: bigint }[]>`
+        SELECT COUNT(*) 
+        FROM "Movimiento_Inventario"
+        WHERE id_usuario = ${user.id_usuario}
+        AND DATE(fecha_movimiento) = CURRENT_DATE
+      `;
+
+      const movimientosHoy =
+        resultMovimientos.length > 0 ? Number(resultMovimientos[0].count) : 0;
 
       return res.json({
         status: 'success',
