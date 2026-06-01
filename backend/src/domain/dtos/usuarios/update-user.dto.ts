@@ -7,7 +7,9 @@ export class UpdateUserDto {
     public readonly email?: string,
     public readonly rol?: string,
     public readonly password?: string,
-    public readonly activo?: boolean
+    public readonly activo?: boolean,
+    public readonly puede_registrar_dispositivo?: boolean,
+    public readonly permite_fallback_password?: boolean
   ) {}
 
   get values() {
@@ -19,22 +21,42 @@ export class UpdateUserDto {
     if (this.password !== undefined) returnObj.password = this.password;
     if (this.activo !== undefined) returnObj.activo = this.activo;
 
+    if (this.puede_registrar_dispositivo !== undefined)
+      returnObj.puede_registrar_dispositivo = this.puede_registrar_dispositivo;
+    if (this.permite_fallback_password !== undefined)
+      returnObj.permite_fallback_password = this.permite_fallback_password;
+
     return returnObj;
   }
 
-  static create(props: { [key: string]: any }): [
-    {
-      [key: string]: string;
-    }?,
-    UpdateUserDto?,
-  ] {
-    const { id, nombre, email, rol, password, activo } = props;
+  static create(props: {
+    [key: string]: string;
+  }): [{ [key: string]: string }?, UpdateUserDto?] {
+    const {
+      id,
+      nombre,
+      email,
+      rol,
+      password,
+      activo,
+      puede_registrar_dispositivo,
+      permite_fallback_password,
+    } = props;
     const errors: { [key: string]: string } = {};
 
-    if (!id || Number(isNaN(id)))
+    if (!id || isNaN(Number(id)))
       return [{ id: 'El ID debe ser un número válido' }, undefined];
 
-    if (!nombre && !email && !rol && !password && activo === undefined) {
+    // Validar si hay algo para actualizar
+    if (
+      !nombre &&
+      !email &&
+      !rol &&
+      !password &&
+      activo === undefined &&
+      puede_registrar_dispositivo === undefined &&
+      permite_fallback_password === undefined
+    ) {
       return [{ data: 'No hay datos para actualizar' }, undefined];
     }
 
@@ -62,12 +84,18 @@ export class UpdateUserDto {
     return [
       undefined,
       new UpdateUserDto(
-        id,
+        Number(id),
         nombre?.trim(),
         email?.toLowerCase().trim(),
         rol?.toUpperCase().trim(),
         password,
-        activo !== undefined ? Boolean(activo) : undefined
+        activo !== undefined ? Boolean(activo) : undefined,
+        puede_registrar_dispositivo !== undefined
+          ? Boolean(puede_registrar_dispositivo)
+          : undefined,
+        permite_fallback_password !== undefined
+          ? Boolean(permite_fallback_password)
+          : undefined
       ),
     ];
   }

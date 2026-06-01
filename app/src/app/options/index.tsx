@@ -13,17 +13,6 @@ import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { capitalize } from '@/lib/utils';
 import { getUserStatsAction } from '@/core/actions/users/get-stats.action';
 
-const formatTime = (dateString: string | null) => {
-  if (!dateString) return 'Sin registros hoy';
-
-  return new Date(dateString).toLocaleTimeString('es-PE', {
-    timeZone: 'America/Lima',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  });
-};
-
 const ProfileScreen = () => {
   const { user, logout } = useAuthStore();
   const textColor = useTheme({}, 'text');
@@ -35,6 +24,8 @@ const ProfileScreen = () => {
     queryKey: ['user-stats', user?.id_usuario],
     queryFn: getUserStatsAction,
   });
+
+  console.log({ stats });
 
   return (
     <>
@@ -119,22 +110,11 @@ const ProfileScreen = () => {
               title="Mi Actividad"
               titleStyle={{ fontSize: 16, fontWeight: 'bold' }}
             >
-              <ThemedView className="bg-surface min-h-[140px] justify-center overflow-hidden rounded-2xl">
+              <ThemedView className="bg-surface min-h-[70px] justify-center overflow-hidden rounded-2xl">
                 {isLoading ? (
                   <ActivityIndicator color={primaryColor} size="large" />
                 ) : (
                   <>
-                    <List.Item
-                      description={formatTime(stats?.ultimo_ingreso || null)}
-                      left={(props) => (
-                        <List.Icon
-                          {...props}
-                          color={textColor}
-                          icon="clock-outline"
-                        />
-                      )}
-                      title="Último ingreso"
-                    />
                     <List.Item
                       description={`${stats?.movimientos_hoy || 0} registros procesados`}
                       left={(props) => (

@@ -241,6 +241,8 @@ export class UsuarioController {
           nombre: true,
           rol: true,
           email: true,
+          puede_registrar_dispositivo: true,
+          permite_fallback_password: true,
         },
       });
 
