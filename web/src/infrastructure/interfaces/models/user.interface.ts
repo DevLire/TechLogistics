@@ -3,6 +3,8 @@ export interface UserInterface {
   nombre: string;
   rol: string;
   email: string;
-  password: string;
+  password?: string;
   activo: boolean;
+  puede_registrar_dispositivo: boolean;
+  permite_fallback_password: boolean;
 }

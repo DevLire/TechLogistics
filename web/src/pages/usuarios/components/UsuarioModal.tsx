@@ -1,6 +1,44 @@
 import { useState, useEffect } from 'react';
 import type { UserInterface } from '@/infrastructure/interfaces/models/user.interface';
 
+const MinimalSwitch = ({
+  label,
+  description,
+  checked,
+  onChange,
+}: {
+  label: string;
+  description?: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) => {
+  return (
+    <div className="flex items-center justify-between py-2">
+      <div>
+        <label className="block text-sm font-medium text-gray-200">
+          {label}
+        </label>
+        {description && (
+          <p className="mt-0.5 text-xs text-gray-500">{description}</p>
+        )}
+      </div>
+      <button
+        type="button"
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#2ecc71] focus:ring-offset-2 focus:ring-offset-[#121212] ${
+          checked ? 'bg-[#2ecc71]' : 'bg-gray-600'
+        }`}
+        onClick={() => onChange(!checked)}
+      >
+        <span
+          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+            checked ? 'translate-x-5' : 'translate-x-0'
+          }`}
+        />
+      </button>
+    </div>
+  );
+};
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -21,6 +59,8 @@ export default function UsuarioModal({
     email: '',
     rol: 'OPERARIO',
     password: '',
+    puede_registrar_dispositivo: false,
+    permite_fallback_password: false,
   };
 
   const [formData, setFormData] =
@@ -33,6 +73,8 @@ export default function UsuarioModal({
         email: usuario.email || '',
         rol: usuario.rol || 'OPERARIO',
         password: '',
+        puede_registrar_dispositivo: !!usuario.puede_registrar_dispositivo,
+        permite_fallback_password: !!usuario.permite_fallback_password,
       });
     } else {
       setFormData(initialState);
@@ -125,6 +167,25 @@ export default function UsuarioModal({
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="col-span-2 mt-2 space-y-2 border-t border-white/10 pt-4">
+              <MinimalSwitch
+                checked={!!formData.puede_registrar_dispositivo}
+                description="Permite al usuario registrar un nuevo dispositivo biométrico"
+                label="Puede registrar dispositivo"
+                onChange={(checked) =>
+                  setFormData({ ...formData, puede_registrar_dispositivo: checked })
+                }
+              />
+              <MinimalSwitch
+                checked={!!formData.permite_fallback_password}
+                description="Permite inicio de sesión con contraseña en lugar de biometría"
+                label="Permite fallback por contraseña"
+                onChange={(checked) =>
+                  setFormData({ ...formData, permite_fallback_password: checked })
                 }
               />
             </div>
