@@ -3,26 +3,38 @@ import { regularExps } from '../../../config/regular-exp';
 export class LoginUserDto {
   private constructor(
     public readonly email: string,
-    public readonly password: string
+    public readonly password: string,
+    public readonly deviceId: string
   ) {}
 
   static create(props: {
     [key: string]: string;
   }): [{ [key: string]: string }?, LoginUserDto?] {
-    const { email, password } = props;
+    const { email, password, deviceId } = props;
     const errors: { [key: string]: string } = {};
 
     if (!email || !regularExps.email.test(email))
       errors.email = 'El email no es válido';
 
-    if (!password) {
+    if (!password.trim()) {
       errors.password = 'El campo "password" es obligatorio.';
-    } else if (password.length < 6) {
+    } else if (password.trim().length < 6) {
       errors.password = 'Debe tener al menos 6 caracteres.';
+    }
+
+    if (!deviceId.trim()) {
+      errors.deviceId = 'Se requiere proporcionar un Device ID';
     }
 
     if (Object.keys(errors).length > 0) return [errors, undefined];
 
-    return [undefined, new LoginUserDto(email.toLowerCase().trim(), password)];
+    return [
+      undefined,
+      new LoginUserDto(
+        email.toLowerCase().trim(),
+        password.trim(),
+        deviceId.trim()
+      ),
+    ];
   }
 }

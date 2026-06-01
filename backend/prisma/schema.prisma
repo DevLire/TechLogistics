@@ -32,6 +32,11 @@ enum EstadoAcceso {
   DENEGADO
 }
 
+enum MetodoAcceso {
+  HUELLA
+  PASSWORD
+}
+
 // --- MODELOS DE NEGOCIO ---
 
 model Categoria {
@@ -81,6 +86,9 @@ model Usuario {
   password   String     @db.VarChar(255)
   activo     Boolean    @default(true)
 
+  puede_registrar_dispositivo Boolean @default(false)
+  permite_fallback_password   Boolean @default(false)
+
   movimientos         Movimiento_Inventario[]
   dispositivos        Dispositivo_Autorizado[]
   accesos_biometricos Acceso_Biometrico[]
@@ -104,6 +112,8 @@ model Acceso_Biometrico {
   id_usuario                Int
   fecha_hora                DateTime     @default(now())
   estado                    EstadoAcceso
+
+  metodo_acceso MetodoAcceso @default(HUELLA)
 
   usuario                Usuario                @relation(fields: [id_usuario], references: [id_usuario])
   dispositivo_autorizado Dispositivo_Autorizado @relation(fields: [id_dispositivo_autorizado], references: [id_dispositivo_autorizado])
