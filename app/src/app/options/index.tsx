@@ -1,18 +1,40 @@
-import { ThemedView } from '@/presentation/components/ThemedView';
-import { ThemedText } from '@/presentation/components/ThemedText';
 import { Stack } from 'expo-router';
-import { View, ScrollView } from 'react-native';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { capitalize } from '@/lib/utils';
+import { View, ScrollView, ActivityIndicator } from 'react-native';
 import { List } from 'react-native-paper';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useTheme } from '@/hooks/use-theme';
+import { useQuery } from '@tanstack/react-query';
+
+import { ThemedView } from '@/presentation/components/ThemedView';
+import { ThemedText } from '@/presentation/components/ThemedText';
 import { ThemedButton } from '@/presentation/components/ThemedButton';
+import { useTheme } from '@/hooks/use-theme';
+
+import { useAuthStore } from '@/stores/auth/useAuthStore';
+import { capitalize } from '@/lib/utils';
+import { getUserStatsAction } from '@/core/actions/users/get-stats.action';
+
+const formatTime = (dateString: string | null) => {
+  if (!dateString) return 'Sin registros hoy';
+
+  return new Date(dateString).toLocaleTimeString('es-PE', {
+    timeZone: 'America/Lima',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+};
 
 const ProfileScreen = () => {
   const { user, logout } = useAuthStore();
   const textColor = useTheme({}, 'text');
   const errorColor = useTheme({}, 'error');
+  const successColor = useTheme({}, 'success');
+  const primaryColor = useTheme({}, 'primary');
+
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['user-stats', user?.id_usuario],
+    queryFn: getUserStatsAction,
+  });
 
   return (
     <>
@@ -72,7 +94,7 @@ const ProfileScreen = () => {
                   right={(props) => (
                     <List.Icon
                       {...props}
-                      color={useTheme({}, 'success')}
+                      color={successColor}
                       icon="check-circle"
                     />
                   )}
@@ -97,29 +119,35 @@ const ProfileScreen = () => {
               title="Mi Actividad"
               titleStyle={{ fontSize: 16, fontWeight: 'bold' }}
             >
-              <ThemedView className="bg-surface overflow-hidden rounded-2xl">
-                <List.Item
-                  description="Hoy, 08:30 AM"
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      color={textColor}
-                      icon="clock-outline"
+              <ThemedView className="bg-surface min-h-[140px] justify-center overflow-hidden rounded-2xl">
+                {isLoading ? (
+                  <ActivityIndicator color={primaryColor} size="large" />
+                ) : (
+                  <>
+                    <List.Item
+                      description={formatTime(stats?.ultimo_ingreso || null)}
+                      left={(props) => (
+                        <List.Icon
+                          {...props}
+                          color={textColor}
+                          icon="clock-outline"
+                        />
+                      )}
+                      title="Último ingreso"
                     />
-                  )}
-                  title="Último ingreso"
-                />
-                <List.Item
-                  description="14 registros procesados"
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      color={textColor}
-                      icon="swap-horizontal"
+                    <List.Item
+                      description={`${stats?.movimientos_hoy || 0} registros procesados`}
+                      left={(props) => (
+                        <List.Icon
+                          {...props}
+                          color={textColor}
+                          icon="swap-horizontal"
+                        />
+                      )}
+                      title="Movimientos de hoy"
                     />
-                  )}
-                  title="Movimientos de hoy"
-                />
+                  </>
+                )}
               </ThemedView>
             </List.Section>
 
