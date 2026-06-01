@@ -1,11 +1,10 @@
 import { ThemedView } from '@/presentation/components/ThemedView';
 import { ThemedText } from '@/presentation/components/ThemedText';
 import { Stack } from 'expo-router';
-import { View } from 'react-native';
-import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
+import { View, ScrollView } from 'react-native';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { capitalize } from '@/lib/utils';
-import { List, Switch } from 'react-native-paper';
+import { List } from 'react-native-paper';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTheme } from '@/hooks/use-theme';
 import { ThemedButton } from '@/presentation/components/ThemedButton';
@@ -13,6 +12,7 @@ import { ThemedButton } from '@/presentation/components/ThemedButton';
 const ProfileScreen = () => {
   const { user, logout } = useAuthStore();
   const textColor = useTheme({}, 'text');
+  const errorColor = useTheme({}, 'error');
 
   return (
     <>
@@ -24,87 +24,124 @@ const ProfileScreen = () => {
         }}
       />
       <ThemedView className="flex-1">
-        {/* Card */}
-        <ThemedView className="bg-surface items-center justify-center rounded-3xl pt-10 pb-2">
-          <View>
-            <TechLogisticsImagotipo height={200} width={270} />
-          </View>
-        </ThemedView>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 40 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Cabecera / Identificación */}
+          <ThemedView className="bg-surface items-center justify-center rounded-b-3xl pt-10 pb-8 shadow-sm">
+            <View className="bg-primary/10 mb-4 rounded-full p-5">
+              <Ionicons
+                color={useTheme({}, 'primary')}
+                name="person"
+                size={60}
+              />
+            </View>
+            <ThemedText className="text-3xl font-bold">
+              {user?.nombre}
+            </ThemedText>
+            <ThemedText className="text-md dark:text-white/50">
+              {user?.email}
+            </ThemedText>
 
-        {/* Opciones */}
-        <ThemedView className="mt-5 ml-7">
-          {/* Tema */}
-          <View>
-            <ThemedText className="text-2xl">Tema:</ThemedText>
-            <List.Section titleStyle={{ fontSize: 20 }}>
-              <View>
+            {/* Badge de Rol */}
+            <View className="bg-tertiary mt-3 rounded-full px-4 py-1">
+              <ThemedText className="text-primary text-sm font-bold">
+                {capitalize(user?.rol ?? '')}
+              </ThemedText>
+            </View>
+          </ThemedView>
+
+          {/* Opciones del Perfil */}
+          <ThemedView className="mt-6 px-4">
+            {/* Sección: Seguridad y Dispositivo */}
+            <List.Section
+              title="Seguridad y Acceso"
+              titleStyle={{ fontSize: 16, fontWeight: 'bold' }}
+            >
+              <ThemedView className="bg-surface overflow-hidden rounded-2xl">
                 <List.Item
-                  left={() => (
-                    <Ionicons
+                  description="Acceso principal habilitado"
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
                       color={textColor}
-                      name="contrast-outline"
-                      size={24}
-                      style={{ marginLeft: 8, alignSelf: 'center' }}
+                      icon="fingerprint"
                     />
                   )}
-                  right={() => <Switch />}
-                  title="Claro o Oscuro"
+                  right={(props) => (
+                    <List.Icon
+                      {...props}
+                      color={useTheme({}, 'success')}
+                      icon="check-circle"
+                    />
+                  )}
+                  title="Biometría activa"
                 />
-              </View>
+                <List.Item
+                  description={`${user?.dispositivos?.length || 0} terminales autorizadas`}
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      color={textColor}
+                      icon="cellphone-link"
+                    />
+                  )}
+                  title="Dispositivos vinculados"
+                />
+              </ThemedView>
             </List.Section>
-          </View>
 
-          {/* Información */}
-          <View>
-            <ThemedText className="text-2xl">Información:</ThemedText>
-            <List.Section titleStyle={{ fontSize: 20 }}>
-              <View>
+            {/* Sección: Actividad Operativa */}
+            <List.Section
+              title="Mi Actividad"
+              titleStyle={{ fontSize: 16, fontWeight: 'bold' }}
+            >
+              <ThemedView className="bg-surface overflow-hidden rounded-2xl">
                 <List.Item
-                  left={() => (
-                    <Ionicons
+                  description="Hoy, 08:30 AM"
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
                       color={textColor}
-                      name="person-outline"
-                      size={24}
-                      style={{ marginLeft: 8, alignSelf: 'center' }}
+                      icon="clock-outline"
                     />
                   )}
-                  title={user?.nombre}
+                  title="Último ingreso"
                 />
-              </View>
-              <View>
                 <List.Item
-                  left={() => (
-                    <Ionicons
+                  description="14 registros procesados"
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
                       color={textColor}
-                      name="cube-outline"
-                      size={24}
-                      style={{ marginLeft: 8, alignSelf: 'center' }}
+                      icon="swap-horizontal"
                     />
                   )}
-                  title={capitalize(user?.rol ?? '')}
+                  title="Movimientos de hoy"
                 />
-              </View>
-              <View>
-                <List.Item
-                  left={() => (
-                    <Ionicons
-                      color={textColor}
-                      name="phone-portrait-outline"
-                      size={24}
-                      style={{ marginLeft: 8, alignSelf: 'center' }}
-                    />
-                  )}
-                  title="3 Dispositivos vinculados"
-                />
-              </View>
+              </ThemedView>
             </List.Section>
-          </View>
 
-          {/* Cerrar sesión */}
-          <View className="mt-5">
-            <ThemedButton onPress={logout}>Cerrar sesión</ThemedButton>
-          </View>
-        </ThemedView>
+            {/* Cerrar sesión */}
+            <View className="mt-8 px-2">
+              <ThemedButton
+                labelStyle={{ color: errorColor }}
+                style={{
+                  backgroundColor: 'transparent',
+                  borderWidth: 1,
+                  borderColor: errorColor,
+                }}
+                onPress={logout}
+              >
+                Cerrar sesión de forma segura
+              </ThemedButton>
+              <ThemedText className="mt-4 text-center text-xs dark:text-white/30">
+                TechLogistics App v1.0.0
+              </ThemedText>
+            </View>
+          </ThemedView>
+        </ScrollView>
       </ThemedView>
     </>
   );

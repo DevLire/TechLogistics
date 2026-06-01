@@ -9,6 +9,11 @@ import { useSecurityStore } from '@/stores/security/useSecurityStore';
 
 type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 
+type ActionResponse = {
+  ok: boolean;
+  message?: string;
+};
+
 type AuthState = {
   // Properties
   user: UserData | null;
@@ -16,10 +21,10 @@ type AuthState = {
   authStatus: AuthStatus;
 
   // Actions
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<ActionResponse>;
   logout: () => void;
   checkAuthStatus: () => Promise<boolean>;
-  revalidatePassword: (password: string) => Promise<boolean>;
+  revalidatePassword: (password: string) => Promise<ActionResponse>;
 };
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
@@ -44,16 +49,19 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         authStatus: 'authenticated',
       });
 
-      return true;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+      return { ok: true };
+    } catch (error: any) {
       await SecureStore.deleteItemAsync('token');
       set({
         user: null,
         token: null,
         authStatus: 'not-authenticated',
       });
-      return false;
+
+      return {
+        ok: false,
+        message: error.response?.data?.message || 'Credenciales inválidas',
+      };
     }
   },
 
@@ -64,11 +72,16 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
   checkAuthStatus: async () => {
     try {
-      const { user, token } = await checkAuthAction();
-      await SecureStore.setItemAsync('token', token);
+      const data = await checkAuthAction();
+      await SecureStore.setItemAsync('token', data.token);
+
+      if (data.security) {
+        useSecurityStore.getState().setSecurityFlags(data.security);
+      }
+
       set({
-        user: user,
-        token: token,
+        user: data.user,
+        token: data.token,
         authStatus: 'authenticated',
       });
       return true;
@@ -88,15 +101,21 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   revalidatePassword: async (password: string) => {
     try {
       const email = get().user!.email;
-      if (!email) return false;
+      if (!email)
+        return { ok: false, message: 'Usuario no encontrado en sesión' };
+
       const deviceId = await getUniqueDeviceId();
       const data = await loginAction(email, password, deviceId);
+
       await SecureStore.setItemAsync('token', data.token);
       set({ token: data.token });
-      return true;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      return false;
+
+      return { ok: true };
+    } catch (error: any) {
+      return {
+        ok: false,
+        message: error.response?.data?.message || 'Error al validar contraseña',
+      };
     }
   },
 }));

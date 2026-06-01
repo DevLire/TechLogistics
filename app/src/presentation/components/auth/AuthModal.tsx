@@ -36,11 +36,13 @@ export const AuthModal = ({
         <View className="items-center justify-center">
           <ThemedView className="w-[90%] gap-5 rounded-3xl px-6 py-5" {...rest}>
             {/* Textos */}
-            <View>
+            <View className="items-center">
               <ThemedText className="text-xl" type="semi-bold">
                 {title}
               </ThemedText>
-              <ThemedText type="normal">{description}</ThemedText>
+              <ThemedText className="text-center" type="normal">
+                {description}
+              </ThemedText>
             </View>
             {/* Input */}
             <ThemedInput

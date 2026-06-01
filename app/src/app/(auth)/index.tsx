@@ -50,14 +50,16 @@ const LoginScreen = () => {
     }
     try {
       setIsSubmitting(true);
-      const isValid = await login(form.email, form.password);
 
-      if (!isValid) {
+      const response = await login(form.email, form.password);
+
+      if (!response.ok) {
         toast.error('Error al iniciar sesión', {
-          description: 'Credenciales inválidas',
+          description: response.message || 'Credenciales inválidas',
         });
         return;
       }
+
       router.replace('/');
     } catch (error) {
       console.error(error);
