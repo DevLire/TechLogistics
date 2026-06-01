@@ -19,6 +19,7 @@ export class AuthController {
       // Verificar si el correo existe
       const user = await prisma.usuario.findUnique({
         where: { email: loginDto!.email },
+        include: { dispositivos: true },
       });
 
       if (!user || !user.activo) {
@@ -36,6 +37,30 @@ export class AuthController {
           .json({ status: 'fail', message: 'Credenciales incorrectas' });
       }
 
+      // Verificar dispositivo
+      const { deviceId } = req.body;
+
+      // Verificar si alguien más tiene el deviceID
+      const dispositivoExistente =
+        await prisma.dispositivo_Autorizado.findUnique({
+          where: { dispositivo_id: deviceId },
+        });
+
+      const isDeviceRegistered =
+        dispositivoExistente !== null &&
+        dispositivoExistente.id_usuario === user.id_usuario;
+
+      // Si el dispositivo existe pero es de OTRO usuario -> 403 Forbidden
+      if (
+        dispositivoExistente &&
+        dispositivoExistente.id_usuario !== user.id_usuario
+      ) {
+        return res.status(403).json({
+          status: 'fail',
+          message: 'Este dispositivo ya está vinculado a otro operario.',
+        });
+      }
+
       // Generar el JWT usando el ID del usuario
       const token = await JwtAdapter.generateToken({ id: user.id_usuario });
       if (!token)
@@ -46,12 +71,17 @@ export class AuthController {
         });
 
       // Devolvemos el usuario y el token
-      const { password, activo, ...userEntity } = user;
+      const { password, ...userEntity } = user;
 
       return res.json({
         status: 'success',
         user: userEntity,
         token: token,
+        security: {
+          isDeviceRegistered: isDeviceRegistered,
+          canRegisterDevice: user.puede_registrar_dispositivo,
+          allowPasswordFallback: user.permite_fallback_password,
+        },
         errors: formatErrors(null),
       });
     } catch (error: any) {
