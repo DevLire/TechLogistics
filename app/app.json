@@ -32,7 +32,7 @@
           "backgroundColor": "#1a1a1e",
           "android": {
             "image": "./assets/adaptative-icon-foreground.png",
-            "imageWidth": 76
+            "imageWidth": 420
           }
         }
       ],
