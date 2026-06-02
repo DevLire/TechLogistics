@@ -35,14 +35,43 @@ export class DispositivoController {
 
       if (search) {
         whereClause.OR = [
-          { nombre: { contains: String(search), mode: 'insensitive' } },
-          { email: { contains: String(search), mode: 'insensitive' } },
+          {
+            nombre_dispositivo: {
+              contains: String(search),
+              mode: 'insensitive',
+            },
+          },
+          {
+            dispositivo_id: {
+              contains: String(search),
+              mode: 'insensitive',
+            },
+          },
+          {
+            usuario: {
+              nombre: {
+                contains: String(search),
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            usuario: {
+              email: {
+                contains: String(search),
+                mode: 'insensitive',
+              },
+            },
+          },
         ];
       }
 
       const [dispositivos, total] = await Promise.all([
         prisma.dispositivo_Autorizado.findMany({
           where: whereClause,
+          orderBy: {
+            fecha_registro: 'desc',
+          },
           skip: (getDispositivosDto!.page - 1) * getDispositivosDto!.limit,
           take: getDispositivosDto!.limit,
           select: {

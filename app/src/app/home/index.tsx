@@ -108,7 +108,7 @@ const HomeScreen = () => {
         </ThemedView>
 
         <ThemedView margin className="flex-none items-center gap-5">
-          <ThemedText className="items-center text-3xl font-bold">{`${labelBienvenida}, ${user?.nombre}`}</ThemedText>
+          <ThemedText className="text-center text-3xl font-bold">{`${labelBienvenida}, ${user?.nombre}`}</ThemedText>
           <ThemedText
             className="text-center text-sm dark:text-white/35"
             type="normal"

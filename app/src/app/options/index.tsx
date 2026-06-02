@@ -50,10 +50,10 @@ const ProfileScreen = () => {
                 size={60}
               />
             </View>
-            <ThemedText className="text-3xl font-bold">
+            <ThemedText className="text-center text-3xl font-bold">
               {user?.nombre}
             </ThemedText>
-            <ThemedText className="text-md dark:text-white/50">
+            <ThemedText className="text-md text-center dark:text-white/50">
               {user?.email}
             </ThemedText>
 

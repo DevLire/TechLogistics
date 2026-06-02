@@ -71,6 +71,9 @@ export class AccesosBiometricosController {
       const [dispositivos, total] = await Promise.all([
         prisma.acceso_Biometrico.findMany({
           where: whereClause,
+          orderBy: {
+            fecha_hora: 'desc',
+          },
           skip:
             (getAccesosBiometricosDto!.page - 1) *
             getAccesosBiometricosDto!.limit,

@@ -67,7 +67,7 @@ export class SeedController {
           permite_fallback_password: false,
         },
         {
-          nombre: 'Operario TechLogistics',
+          nombre: 'Operario TechLogistics', // Caso 1: Acceso normal con huella
           email: 'operario@techlogistics.com',
           password: '123456',
           rol: 'OPERARIO' as const,
@@ -76,7 +76,7 @@ export class SeedController {
           permite_fallback_password: false,
         },
         {
-          nombre: 'Carla Mendoza',
+          nombre: 'Carla Mendoza', // Caso 2: Tiene dispositivo, permite password
           email: 'carla.mendoza@techlogistics.com',
           password: '123456',
           rol: 'OPERARIO' as const,
@@ -85,7 +85,7 @@ export class SeedController {
           permite_fallback_password: true,
         },
         {
-          nombre: 'Luis Torres',
+          nombre: 'Luis Torres', // Caso 3: SIN dispositivo, PERO puede registrarlo (y no usa password)
           email: 'luis.torres@techlogistics.com',
           password: '123456',
           rol: 'OPERARIO' as const,
@@ -95,7 +95,7 @@ export class SeedController {
         },
         {
           nombre: 'María Salazar',
-          email: 'maria.salazar@techlogistics.com',
+          email: 'maria.salazar@techlogistics.com', // Caso 4: SIN dispositivo, PERO puede registrarlo (usa password)
           password: '123456',
           rol: 'OPERARIO' as const,
           activo: true,
@@ -104,12 +104,12 @@ export class SeedController {
         },
         {
           nombre: 'Jorge Ramírez',
-          email: 'jorge.ramirez@techlogistics.com',
+          email: 'jorge.ramirez@techlogistics.com', // Caso 5: SIN dispositivo, NO puede registrarlo (Modal de bloqueo)
           password: '123456',
           rol: 'OPERARIO' as const,
           activo: true,
           puede_registrar_dispositivo: false,
-          permite_fallback_password: true,
+          permite_fallback_password: false,
         },
         {
           nombre: 'Sofía León',
@@ -267,20 +267,24 @@ export class SeedController {
         })),
       });
 
-      const usuariosConDispositivo = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+      const usuariosConDispositivo = [1, 2, 3, 4, 7, 8, 9, 10];
+
+      const modelosReales = [
+        '22111317PG', // Poco / Xiaomi
+        'SM-G998B', // Samsung S21 Ultra
+        'CPH2207', // Oppo Reno
+        'M2102J20SG', // Poco X3 Pro
+        'SM-A525M', // Samsung A52
+        'XT2131-1', // Motorola G50
+        'RMX3231', // Realme C11
+        'V2027', // Vivo Y20s
       ];
 
       const dispositivosData = usuariosConDispositivo.map(
         (id_usuario, index) => ({
           id_usuario,
           dispositivo_id: buildDeviceId(index),
-          nombre_dispositivo:
-            id_usuario === 1
-              ? 'iPhone Administrador'
-              : id_usuario === 2
-                ? 'Tablet Supervisor'
-                : `Móvil Corporativo ${index + 1}`,
+          nombre_dispositivo: modelosReales[index % modelosReales.length],
           fecha_registro: getPastDate(60, index),
           activo: true,
         })
@@ -294,7 +298,8 @@ export class SeedController {
         const dispositivo = dispositivosData[index % dispositivosData.length];
         const isFallbackUser =
           dispositivo.id_usuario === 4 || dispositivo.id_usuario === 7;
-        const isSupervisor = dispositivo.id_usuario === 2 || dispositivo.id_usuario === 8;
+        const isSupervisor =
+          dispositivo.id_usuario === 2 || dispositivo.id_usuario === 8;
         const denied = index % 11 === 0 || index % 17 === 0;
 
         return {
@@ -327,22 +332,6 @@ export class SeedController {
           items: [
             { id_producto: 2, cantidad: 15 },
             { id_producto: 9, cantidad: 4 },
-          ],
-        },
-        {
-          id_usuario: 5,
-          tipo: 'INGRESO' as const,
-          items: [
-            { id_producto: 6, cantidad: 80 },
-            { id_producto: 10, cantidad: 120 },
-          ],
-        },
-        {
-          id_usuario: 6,
-          tipo: 'SALIDA' as const,
-          items: [
-            { id_producto: 7, cantidad: 2 },
-            { id_producto: 11, cantidad: 4 },
           ],
         },
         {
@@ -384,30 +373,6 @@ export class SeedController {
           items: [
             { id_producto: 3, cantidad: 2 },
             { id_producto: 7, cantidad: 1 },
-          ],
-        },
-        {
-          id_usuario: 5,
-          tipo: 'INGRESO' as const,
-          items: [
-            { id_producto: 5, cantidad: 60 },
-            { id_producto: 12, cantidad: 18 },
-          ],
-        },
-        {
-          id_usuario: 6,
-          tipo: 'SALIDA' as const,
-          items: [
-            { id_producto: 9, cantidad: 5 },
-            { id_producto: 10, cantidad: 20 },
-          ],
-        },
-        {
-          id_usuario: 7,
-          tipo: 'INGRESO' as const,
-          items: [
-            { id_producto: 4, cantidad: 22 },
-            { id_producto: 11, cantidad: 8 },
           ],
         },
       ];
@@ -479,6 +444,14 @@ export class SeedController {
         message:
           'Base de datos limpiada y ejecutado el seed con escenarios de prueba.',
         data: {
+          testCases: {
+            ingresoHuellaNormal: 'operario@techlogistics.com',
+            ingresoConContrasena: 'carla.mendoza@techlogistics.com',
+            sinDispositivoPeroPuedeRegistrar: 'luis.torres@techlogistics.com',
+            sinDispositivoPeroPuedeRegistrarConContrasena:
+              'maria.salazar@techlogistics.com',
+            sinDispositivoYBloqueado: 'jorge.ramirez@techlogistics.com',
+          },
           testUsers: seededUsers.filter((user) =>
             [
               'administrador@techlogistics.com',
