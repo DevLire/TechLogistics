@@ -17,6 +17,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { AuthProvider } from '@/presentation/providers/AuthProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DeviceCheckerProvider } from '@/presentation/providers/DeviceCheckerProvider';
+import { NavigationBar } from 'expo-navigation-bar';
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,7 @@ const RootLayout = () => {
         backgroundColor="transparent"
         barStyle="dark-content"
       />
+      <NavigationBar style="light" />
       <QueryClientProvider client={queryClient}>
         <ThemeProvider
           value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
