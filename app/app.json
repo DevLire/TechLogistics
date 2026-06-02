@@ -4,19 +4,18 @@
     "slug": "TechLogistics",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "scheme": "techlogistics",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.anonymous.TechLogistics"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/adaptative-icon-foreground.png",
+        "backgroundImage": "./assets/adaptative-icon-background.png",
+        "monochromeImage": "./assets/adaptative-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.TechLogistics"
@@ -30,9 +29,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#1a1a1e",
           "android": {
-            "image": "./assets/images/splash-icon.png",
+            "image": "./assets/adaptative-icon-foreground.png",
             "imageWidth": 76
           }
         }
@@ -52,6 +51,18 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cac001d7-3fe2-4c42-b08e-de12ea8f6002"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cac001d7-3fe2-4c42-b08e-de12ea8f6002"
     }
   }
 }
