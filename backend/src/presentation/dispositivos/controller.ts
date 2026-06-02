@@ -417,6 +417,7 @@ export class DispositivoController {
       });
     }
   };
+
   public deleteDispositivo = async (req: Request, res: Response) => {
     const id = +req.params.id;
     const [errors, getDispositivoByUser] = GetDispositivoByIdDto.create(id);
@@ -446,6 +447,7 @@ export class DispositivoController {
         },
         data: {
           activo: false,
+          dispositivo_id: `${dispositivoExists.dispositivo_id}_INACTIVO_${Date.now()}`,
         },
         select: {
           id_dispositivo_autorizado: true,
@@ -460,9 +462,11 @@ export class DispositivoController {
           fecha_registro: true,
         },
       });
+
       return res.json({
         status: 'success',
-        message: 'Dispositivo eliminado correctamente',
+        message:
+          'Dispositivo desvinculado correctamente. El terminal quedó libre.',
         data: deletedDispositivo,
         errors: formatErrors(null),
       });

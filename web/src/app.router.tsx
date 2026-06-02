@@ -15,6 +15,7 @@ import {
 } from './components/routes/ProtectedRoutes';
 import { Usuarios } from '@/pages/usuarios/Usuarios.tsx';
 import { Accesos } from '@/pages/accesos/Accesos.tsx';
+import Dispositivos from '@/pages/dispositivos/Dispositivos.tsx';
 
 export const appRouter = createBrowserRouter([
   // Rutas públicas
@@ -53,6 +54,14 @@ export const appRouter = createBrowserRouter([
         element: (
           <AdminRoute>
             <Usuarios />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: '/dispositivos',
+        element: (
+          <AdminRoute>
+            <Dispositivos />
           </AdminRoute>
         ),
       },
