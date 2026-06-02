@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from 'react';
+import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ImageBackground } from 'expo-image';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -16,10 +17,14 @@ export const DeviceCheckerProvider = ({ children }: PropsWithChildren) => {
   const colorScheme = useColorScheme();
   const authStatus = useAuthStore((state) => state.authStatus);
   const logout = useAuthStore((state) => state.logout);
-  const { isDeviceRegistered, canRegisterDevice } = useSecurityStore();
+  const { isDeviceRegistered, canRegisterDevice, isCheckingSecurity } =
+    useSecurityStore();
 
   const isBlocked =
-    authStatus === 'authenticated' && !isDeviceRegistered && !canRegisterDevice;
+    authStatus === 'authenticated' &&
+    !isCheckingSecurity &&
+    !isDeviceRegistered &&
+    !canRegisterDevice;
 
   return (
     <>

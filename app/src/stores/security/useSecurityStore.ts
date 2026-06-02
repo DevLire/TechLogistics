@@ -28,13 +28,14 @@ export const useSecurityStore = create<SecurityState>()((set, get) => ({
   isDeviceRegistered: false,
   canRegisterDevice: false,
   allowPasswordFallback: false,
-  isCheckingSecurity: false,
+  isCheckingSecurity: true,
 
   setSecurityFlags: (flags: SecurityFlags) => {
     set({
       isDeviceRegistered: flags.isDeviceRegistered,
       canRegisterDevice: flags.canRegisterDevice,
       allowPasswordFallback: flags.allowPasswordFallback,
+      isCheckingSecurity: false,
     });
   },
 

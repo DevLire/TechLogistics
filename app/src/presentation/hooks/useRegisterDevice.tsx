@@ -48,7 +48,7 @@ export const useRegisterDevice = () => {
       return;
     }
 
-    // CASO 2: Dispositivo nuevo, operario con permiso
+    // CASO 2: Dispositivo nuevo, operario con permiso (Huella)
     if (!isDeviceRegistered && canRegisterDevice) {
       try {
         await loggerDeviceLocally(String(user.id_usuario));
@@ -60,14 +60,12 @@ export const useRegisterDevice = () => {
           toast.success('Dispositivo Enlazado', {
             description: 'Terminal registrado con éxito. Ya puedes operar.',
           });
-          // 🌟 ¡Redirigimos a la pantalla principal!
           router.replace('/home');
         } else {
           toast.error('Error de Servidor', {
             description: 'El backend rechazó el registro.',
           });
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error('Error de Enrolamiento', {
           description: 'Proceso biométrico cancelado.',
@@ -77,7 +75,41 @@ export const useRegisterDevice = () => {
     }
   };
 
+  const handlePasswordRegistration = async () => {
+    if (!user?.id_usuario) return false;
+
+    // CASO 3: Dispositivo nuevo, operario con permiso (Contraseña)
+    if (!isDeviceRegistered && canRegisterDevice) {
+      try {
+        const deviceId = await getUniqueDeviceId();
+        const deviceName = Device.modelName || 'Terminal Móvil';
+
+        const enrolamientoExitoso = await registerDevice(deviceId, deviceName);
+
+        if (enrolamientoExitoso) {
+          toast.success('Dispositivo Enlazado', {
+            description: 'Terminal registrado con éxito usando contraseña.',
+          });
+          router.replace('/home');
+          return true;
+        } else {
+          toast.error('Error de Servidor', {
+            description: 'El backend rechazó el registro.',
+          });
+          return false;
+        }
+      } catch (error) {
+        toast.error('Error de Enrolamiento', {
+          description: 'Ocurrió un problema al registrar el dispositivo.',
+        });
+        return false;
+      }
+    }
+    return false;
+  };
+
   return {
     handleBiometricAuth,
+    handlePasswordRegistration,
   };
 };

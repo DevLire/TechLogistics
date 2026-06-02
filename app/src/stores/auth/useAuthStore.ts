@@ -67,16 +67,20 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
   logout: async () => {
     await SecureStore.deleteItemAsync('token');
+    useSecurityStore.getState().resetSecurity();
     set({ user: null, token: null, authStatus: 'not-authenticated' });
   },
 
   checkAuthStatus: async () => {
     try {
-      const data = await checkAuthAction();
+      const deviceId = await getUniqueDeviceId();
+      const data = await checkAuthAction(deviceId);
       await SecureStore.setItemAsync('token', data.token);
 
       if (data.security) {
         useSecurityStore.getState().setSecurityFlags(data.security);
+      } else {
+        useSecurityStore.setState({ isCheckingSecurity: false });
       }
 
       set({
@@ -88,6 +92,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     } catch (error) {
       console.warn(error);
       await SecureStore.deleteItemAsync('token');
+      useSecurityStore.getState().resetSecurity();
       set({
         user: null,
         token: null,
