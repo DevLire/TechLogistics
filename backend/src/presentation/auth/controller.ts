@@ -51,9 +51,10 @@ export class AuthController {
           dispositivoExistente !== null &&
           dispositivoExistente.id_usuario === user.id_usuario;
 
-        // Si el dispositivo existe pero es de OTRO usuario -> 403 Forbidden
+        // Si el dispositivo existe, ESTÁ ACTIVO, pero es de OTRO usuario -> 403 Forbidden
         if (
           dispositivoExistente &&
+          dispositivoExistente.activo &&
           dispositivoExistente.id_usuario !== user.id_usuario
         ) {
           return res.status(403).json({
