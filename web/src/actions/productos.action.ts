@@ -13,11 +13,11 @@ interface Options {
   page?: number | string;
   search?: string;
   estado?: string;
-  conStock: boolean;
+  conStock?: boolean;
 }
 
 export const getProductos = async (options: Options) => {
-  const { limit, page, search, estado, conStock } = options;
+  const { limit, page, search, estado, conStock = false } = options;
 
   const { data } = await api.get<ProductsResponse>('/productos', {
     params: {
