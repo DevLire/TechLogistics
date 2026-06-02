@@ -2,13 +2,15 @@ export class GetProductosDto {
   private constructor(
     public readonly page: number,
     public readonly limit: number,
-    public readonly estado: 'ACTIVOS' | 'INACTIVOS' | 'TODOS'
+    public readonly estado: 'ACTIVOS' | 'INACTIVOS' | 'TODOS',
+    public readonly conStock: boolean
   ) {}
 
   static create(
     page: number = 1,
     limit: number = 10,
-    estado: string = 'ACTIVOS'
+    estado: string = 'ACTIVOS',
+    conStock: any = 'false'
   ): [{ [key: string]: string }?, GetProductosDto?] {
     const pageNumber = Number(page);
     const limitNumber = Number(limit);
@@ -30,9 +32,11 @@ export class GetProductosDto {
       ];
     }
 
+    const hasStock = conStock === true || conStock === 'true';
+
     return [
       undefined,
-      new GetProductosDto(pageNumber, limitNumber, estadoUpper),
+      new GetProductosDto(pageNumber, limitNumber, estadoUpper, hasStock),
     ];
   }
 }

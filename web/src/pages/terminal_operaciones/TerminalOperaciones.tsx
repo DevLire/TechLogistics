@@ -28,8 +28,9 @@ export default function TerminalOperaciones() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const { data: productosResponse, isLoading } = useQuery({
-    queryKey: ['productos', 'terminal'],
-    queryFn: () => getProductos({ limit: 1000 }),
+    queryKey: ['productos', 'terminal', tipoMovimiento],
+    queryFn: () =>
+      getProductos({ limit: 1000, conStock: tipoMovimiento === 'SALIDA' }),
   });
 
   const productos = productosResponse?.data || [];

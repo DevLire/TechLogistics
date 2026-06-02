@@ -7,11 +7,12 @@ export class AccesosBiometricosController {
   constructor() {}
 
   public getAccesosBiometricos = async (req: Request, res: Response) => {
-    const { page = 1, limit = 10, search = '' } = req.query;
+    const { page = 1, limit = 10, search = '', estado } = req.query;
 
     const [errors, getAccesosBiometricosDto] = GetAccesosBiometricosDto.create(
       +page,
-      +limit
+      +limit,
+      estado
     );
 
     if (errors) {
@@ -68,6 +69,10 @@ export class AccesosBiometricosController {
         ];
       }
 
+      if (getAccesosBiometricosDto!.estado) {
+        whereClause.estado = getAccesosBiometricosDto!.estado;
+      }
+
       const [dispositivos, total] = await Promise.all([
         prisma.acceso_Biometrico.findMany({
           where: whereClause,
@@ -113,6 +118,9 @@ export class AccesosBiometricosController {
       const searchParam = search
         ? `&search=${encodeURIComponent(String(search))}`
         : '';
+      const estadoParam = getAccesosBiometricosDto!.estado
+        ? `&estado=${getAccesosBiometricosDto!.estado}`
+        : '';
 
       return res.json({
         status: 'success',
@@ -126,16 +134,11 @@ export class AccesosBiometricosController {
           total,
 
           next: hasNext
-            ? `/api/accesos-biometricos?page=${
-                getAccesosBiometricosDto!.page + 1
-              }&limit=${getAccesosBiometricosDto!.limit}${searchParam}`
+            ? `/api/accesos-biometricos?page=${getAccesosBiometricosDto!.page + 1}&limit=${getAccesosBiometricosDto!.limit}${searchParam}${estadoParam}`
             : null,
-
           prev:
             getAccesosBiometricosDto!.page > 1
-              ? `/api/accesos-biometricos?page=${
-                  getAccesosBiometricosDto!.page - 1
-                }&limit=${getAccesosBiometricosDto!.limit}${searchParam}`
+              ? `/api/accesos-biometricos?page=${getAccesosBiometricosDto!.page - 1}&limit=${getAccesosBiometricosDto!.limit}${searchParam}${estadoParam}`
               : null,
         },
       });

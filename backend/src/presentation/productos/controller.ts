@@ -10,11 +10,18 @@ import { formatErrors } from '../utils/formatErrors';
 
 export class ProductosController {
   public getProductos = async (req: Request, res: Response) => {
-    const { page = 1, limit = 10, search = '', estado = 'TODOS' } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      search = '',
+      estado = 'TODOS',
+      conStock = 'false',
+    } = req.query;
     const [errors, getProductosDto] = GetProductosDto.create(
       +page,
       +limit,
-      estado as string
+      estado as string,
+      conStock
     );
 
     if (errors)
@@ -32,11 +39,19 @@ export class ProductosController {
         whereClause.activo = false;
       }
 
+      if (getProductosDto!.conStock) {
+        whereClause.stock_actual = { gte: 1 };
+      }
+
       if (search) {
         whereClause.OR = [
           { nombre: { contains: String(search), mode: 'insensitive' } },
           { codigo_barras: { contains: String(search) } },
-          { proveedor: { nombre_empresa: { contains: String(search), mode: 'insensitive' } } },
+          {
+            proveedor: {
+              nombre_empresa: { contains: String(search), mode: 'insensitive' },
+            },
+          },
         ];
       }
 
@@ -74,6 +89,7 @@ export class ProductosController {
         getProductosDto!.estado !== 'ACTIVOS'
           ? `&estado=${getProductosDto!.estado}`
           : '';
+      const conStockParam = getProductosDto!.conStock ? `&conStock=true` : '';
 
       return res.json({
         status: 'success',
@@ -85,11 +101,11 @@ export class ProductosController {
           limit: getProductosDto!.limit,
           total,
           next: hasNext
-            ? `/api/productos?page=${getProductosDto!.page + 1}&limit=${getProductosDto!.limit}${searchParam}${estadoParam}`
+            ? `/api/productos?page=${getProductosDto!.page + 1}&limit=${getProductosDto!.limit}${searchParam}${estadoParam}${conStockParam}`
             : null,
           prev:
             getProductosDto!.page > 1
-              ? `/api/productos?page=${getProductosDto!.page - 1}&limit=${getProductosDto!.limit}${searchParam}${estadoParam}`
+              ? `/api/productos?page=${getProductosDto!.page - 1}&limit=${getProductosDto!.limit}${searchParam}${estadoParam}${conStockParam}`
               : null,
         },
       });

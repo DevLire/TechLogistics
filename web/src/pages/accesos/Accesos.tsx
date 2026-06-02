@@ -22,7 +22,6 @@ export const Accesos = () => {
   ];
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPagina((prev) => (prev === 1 ? prev : 1));
   }, [estadoAcceso]);
 
@@ -40,24 +39,17 @@ export const Accesos = () => {
   const { data, isFetching } = useQuery({
     queryKey: ['accesos', pagina, busqueda, estadoAcceso],
     queryFn: () => {
-      // Si la API acepta el filtro de estado, se puede enviar aquí.
-      // Adaptar el Action si es necesario, de momento se asume que no filtra por estado (al no estar definido en Action Options)
-      // o se pasa en el query. Lo omitimos o enviamos si lo acepta.
       return getAccesosBiometricosAction({
         limit: limite,
         page: pagina,
         search: busqueda,
+        estado: estadoAcceso === 'TODOS' ? undefined : estadoAcceso,
       });
     },
     placeholderData: (previousData) => previousData,
   });
 
-  // Filtramos localmente si la API no soporta el filtro por estado, pero idealmente se filtraría en el backend.
-  // Aquí usamos el field `estado` de la respueta.
-  let accesos = data?.data || [];
-  if (estadoAcceso !== 'TODOS') {
-    accesos = accesos.filter((acceso) => acceso.estado === estadoAcceso);
-  }
+  const accesos = data?.data || [];
   const pagination = data?.pagination;
 
   const columns: Column<GetAccesosBiometricosDatum>[] = [

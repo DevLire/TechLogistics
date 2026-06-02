@@ -2,14 +2,17 @@ import { api } from '../api/api';
 import type { GetAccesosBiometricosResponse } from '@/infrastructure/interfaces/responses/get-accesos-biometricos.ts';
 import type { GetAnomaliasResponse } from '@/infrastructure/interfaces/responses/get-anomalias.response.ts';
 
+export type EstadoAcceso = 'PERMITIDO' | 'DENEGADO';
+
 interface Options {
   limit?: number | string;
   page?: number | string;
   search?: string;
+  estado?: EstadoAcceso;
 }
 
 export const getAccesosBiometricosAction = async (options: Options) => {
-  const { limit, page, search } = options;
+  const { limit, page, search, estado } = options;
 
   const { data } = await api.get<GetAccesosBiometricosResponse>(
     '/accesos-biometricos',
@@ -18,6 +21,7 @@ export const getAccesosBiometricosAction = async (options: Options) => {
         limit,
         page,
         search,
+        estado,
       },
     }
   );
