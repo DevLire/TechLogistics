@@ -67,7 +67,7 @@ const RegistroScreen = () => {
   };
 
   return (
-    <ThemedView safe className="flex-1">
+    <ThemedView className="flex-1">
       <KeyboardAwareScrollView
         enableOnAndroid
         contentContainerStyle={{ flexGrow: 1 }}
@@ -75,7 +75,7 @@ const RegistroScreen = () => {
         keyboardShouldPersistTaps="handled"
       >
         {/* Encabezado e Imagotipo */}
-        <ThemedView className="bg-surface pt- items-center justify-center rounded-b-3xl pb-8 shadow-sm">
+        <ThemedView className="bg-surface pt- items-center justify-center rounded-b-3xl py-8 shadow-sm">
           <TechLogisticsImagotipo height={150} width={220} />
         </ThemedView>
 

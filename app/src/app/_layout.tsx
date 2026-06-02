@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAssets } from 'expo-asset';
-import { useColorScheme } from 'react-native';
+import { StatusBar, useColorScheme } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
@@ -60,8 +60,15 @@ const RootLayout = () => {
 
   return (
     <GestureHandlerRootView style={{ backgroundColor, flex: 1 }}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="dark-content"
+      />
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
           <PaperProvider>
             <AuthProvider>
               <DeviceCheckerProvider>
