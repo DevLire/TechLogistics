@@ -1,5 +1,4 @@
 import type { PropsWithChildren } from 'react';
-import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ImageBackground } from 'expo-image';
 import { useColorScheme } from '@/hooks/use-color-scheme';

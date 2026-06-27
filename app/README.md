@@ -1,56 +1,173 @@
-# Welcome to your Expo app 👋
+# Techlogistics - Aplicación Móvil
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Cliente móvil desarrollado con **Expo SDK 56** y **React Native**, orientado al control de accesos a instalaciones, autenticación biométrica y gestión segura de operarios. La aplicación utiliza **Expo Router** para implementar un sistema de navegación basado en archivos.
 
-## Get started
+---
 
-1. Install dependencies
+## Arquitectura
 
-   ```bash
-   npm install
-   ```
+La aplicación está organizada siguiendo una estructura modular que separa la lógica de negocio, infraestructura y presentación.
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+src/
+├── app/              # Rutas y pantallas (Expo Router)
+├── config/           # Configuración global
+├── constants/        # Constantes compartidas
+├── core/             # Cliente API y lógica central
+├── hooks/            # Hooks globales
+├── infrastructure/   # Seguridad e interfaces
+├── lib/              # Utilidades
+├── presentation/     # Componentes y contexto
+└── stores/           # Estado global
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-### Other setup steps
+## Características
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### Hardware Binding
 
-## Learn more
+La aplicación vincula cada usuario a un único dispositivo mediante un identificador persistente almacenado en el dispositivo.
 
-To learn more about developing your project with Expo, look at the following resources:
+Las credenciales sensibles se almacenan utilizando **expo-secure-store**, mientras que la autenticación biométrica aprovecha los mecanismos nativos del sistema operativo (huella dactilar o reconocimiento facial).
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+### DeviceChecker
 
-Join our community of developers creating universal apps.
+Toda la aplicación está protegida por un proveedor (`DeviceChecker`) ubicado en la raíz del árbol de componentes.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Si el dispositivo no se encuentra autorizado por el backend, se muestra un overlay que bloquea completamente la interfaz hasta que el usuario cierre sesión o el dispositivo sea habilitado por un administrador.
+
+---
+
+### Estrategia Anti-Caché
+
+Las solicitudes HTTP incorporan mecanismos para evitar respuestas almacenadas en caché, incluyendo:
+
+- Cabeceras HTTP de no almacenamiento.
+- Parámetros dinámicos en las peticiones para forzar la revalidación de la sesión.
+
+---
+
+## Flujo de Autenticación
+
+### 1. Inicio de sesión
+
+Antes de enviar las credenciales al servidor se realizan validaciones locales:
+
+- Correo electrónico obligatorio.
+- Contraseña obligatoria.
+- Validación del formato del correo.
+- Longitud mínima de seis caracteres para la contraseña.
+
+Además, la aplicación maneja respuestas específicas para distintos escenarios:
+
+- Credenciales inválidas.
+- Dispositivo asociado a otro usuario.
+- Error interno del servidor.
+
+---
+
+### 2. Validación del dispositivo
+
+Una vez autenticado el usuario, el comportamiento depende del estado del dispositivo.
+
+#### Dispositivo registrado
+
+Si el dispositivo pertenece al usuario:
+
+- Se solicita autenticación biométrica.
+- El usuario accede a la aplicación.
+
+Si el administrador habilitó el acceso mediante contraseña como contingencia, el usuario también puede autenticarse utilizando nuevamente sus credenciales, registrándose el método de acceso utilizado.
+
+---
+
+#### Dispositivo no registrado con permiso de enrolamiento
+
+Si el usuario tiene autorización para registrar un nuevo dispositivo:
+
+- Es redirigido a la pantalla de registro.
+- Puede enrolar el dispositivo mediante biometría.
+- Si el administrador habilitó el modo de contingencia, también puede completar el proceso utilizando su contraseña.
+
+---
+
+#### Dispositivo no registrado sin autorización
+
+Cuando el usuario no posee permisos para registrar el dispositivo:
+
+- La aplicación bloquea completamente la interfaz.
+- Se muestra un mensaje indicando que el dispositivo no está autorizado.
+- La única acción disponible es cerrar sesión.
+
+---
+
+### 3. Perfil del usuario
+
+La aplicación dispone de una pantalla de perfil donde el usuario puede consultar su información y finalizar la sesión de forma segura.
+
+---
+
+## Desarrollo Local
+
+### 1. Configurar variables de entorno
+
+Copie el archivo de plantilla.
+
+```bash
+cp .env.template .env
+```
+
+Configure la dirección de la API del backend utilizando la dirección IPv4 de la máquina donde se encuentra ejecutándose.
+
+```env
+EXPO_PUBLIC_API_URL=http://<SU_IP_LOCAL_IPV4>:3000/api
+```
+
+> En Windows puede obtener la dirección IP ejecutando `ipconfig`. En Linux o WSL2 puede utilizar `ifconfig` o `ip addr`.
+
+---
+
+### 2. Instalar dependencias
+
+```bash
+pnpm install
+```
+
+---
+
+### 3. Ejecutar el proyecto
+
+Inicie el servidor de desarrollo de Expo.
+
+```bash
+pnpm start
+```
+
+Una vez iniciado Metro Bundler, podrá:
+
+- Escanear el código QR desde **Expo Go v56**.
+- Ejecutar la aplicación en un emulador de Android.
+- Ejecutarla en el simulador de iOS (macOS).
+
+---
+
+## Tecnologías
+
+- React Native
+- Expo SDK 56
+- Expo Router
+- Expo Secure Store
+- Expo Local Authentication
+- TypeScript
+- Axios
+- Zustand
+- React Context
+
+---
+
+## Licencia
+
+Proyecto desarrollado con fines académicos y de investigación para la gestión logística segura mediante autenticación biométrica y control de dispositivos.

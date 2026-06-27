@@ -247,6 +247,7 @@ export class DispositivoController {
   };
 
   public registerDispositivo = async (req: Request, res: Response) => {
+    // Validar mediante DTOs
     const [errors, registerDispositivoDto] = RegisterDispositivoDto.create(
       req.body
     );
@@ -259,6 +260,7 @@ export class DispositivoController {
       });
 
     try {
+      // Verificar si existe un Usuario
       const usuario = await prisma.usuario.findUnique({
         where: { id_usuario: registerDispositivoDto!.id_usuario },
       });
