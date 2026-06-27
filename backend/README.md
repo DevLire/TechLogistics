@@ -30,7 +30,7 @@ Sigue estos pasos para configurar y ejecutar el servidor en tu entorno local.
 
 ### 1. Configurar variables de entorno
 
-Copia el archivo de plantilla y completa las variables necesarias (puerto, credenciales de la base de datos y secretos JWT).
+Copia el archivo de plantilla y completa las variables necesarias (puerto, credenciales de la base de datos, secretos JWT, etc).
 
 ```bash
 cp .env.template .env

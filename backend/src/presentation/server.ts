@@ -22,9 +22,19 @@ export class Server {
 
   async start() {
     //* Middlewares
+
+    const allowedOrigin = process.env.ALLOWED_ORIGIN;
     this.app.use(
       cors({
-        origin: '*',
+        origin: (origin, callback) => {
+          if (!origin) return callback(null, true);
+
+          if (origin === allowedOrigin) {
+            return callback(null, true);
+          }
+
+          return callback(new Error('No permitido por políticas de CORS'));
+        },
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'],
       })
