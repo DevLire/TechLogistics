@@ -1,8 +1,8 @@
-import type { ComponentProps } from 'react';
-import { Button } from 'react-native-paper';
-import type Ionicons from '@expo/vector-icons/Ionicons';
 import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/lib/utils';
+import type Ionicons from '@expo/vector-icons/Ionicons';
+import type { ComponentProps } from 'react';
+import { Button } from 'react-native-paper';
 
 interface Props extends ComponentProps<typeof Button> {
   className?: string;
@@ -16,6 +16,8 @@ export const ThemedButton = ({ className = '', children, ...rest }: Props) => {
   const rippleColor = `${themePrimary}20`;
 
   const classes = className.split(' ');
+
+  const _hola = 'xd';
 
   const hasBg = classes.some((c) => c.startsWith('bg-'));
   const hasWidth = classes.some((c) => c.startsWith('w-'));
