@@ -1,5 +1,7 @@
+import { createServer, Server as HttpServer } from 'node:http';
 import express, { Router } from 'express';
 import cors from 'cors';
+import { RealtimeServer } from '../infrastructure/realtime/core/realtime.server';
 
 interface Options {
   port: number;
@@ -8,13 +10,17 @@ interface Options {
 }
 
 export class Server {
+  private readonly httpServer: HttpServer;
   private app = express();
+  private readonly realtimeServer: RealtimeServer;
   private readonly port: number;
   private readonly publicPath: string;
   private readonly routes: Router;
 
   constructor(options: Options) {
     const { port, routes, public_path = 'public' } = options;
+    this.httpServer = createServer(this.app);
+    this.realtimeServer = new RealtimeServer(this.httpServer);
     this.port = port;
     this.publicPath = public_path;
     this.routes = routes;
@@ -48,7 +54,9 @@ export class Server {
     //* Routes
     this.app.use(this.routes);
 
-    this.app.listen(this.port, () => {
+    this.realtimeServer.initialize();
+
+    this.httpServer.listen(this.port, () => {
       console.log(`Server running on port ${this.port}`);
     });
   }
