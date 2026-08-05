@@ -18,6 +18,7 @@ import { AuthProvider } from '@/presentation/providers/AuthProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DeviceCheckerProvider } from '@/presentation/providers/DeviceCheckerProvider';
 import { NavigationBar } from 'expo-navigation-bar';
+import { SocketProvider } from '@/presentation/providers/SocketProvider';
 
 const queryClient = new QueryClient();
 
@@ -74,12 +75,14 @@ const RootLayout = () => {
           <PaperProvider>
             <AuthProvider>
               <DeviceCheckerProvider>
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    animation: 'ios_from_right',
-                  }}
-                />
+                <SocketProvider>
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                      animation: 'ios_from_right',
+                    }}
+                  />
+                </SocketProvider>
               </DeviceCheckerProvider>
             </AuthProvider>
           </PaperProvider>

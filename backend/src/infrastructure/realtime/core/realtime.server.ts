@@ -20,10 +20,7 @@ export class RealtimeServer {
 
     this.io.on('connection', (socket) => {
       const authSocket = socket as AuthenticatedSocket;
-      if (!authSocket.identity) {
-        socket.disconnect(true);
-        return;
-      }
+
       console.log(`Client connected: ${authSocket.id}`);
 
       const userRoom = `user:${authSocket.identity.userId}`;
