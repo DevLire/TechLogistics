@@ -8,6 +8,8 @@ import {
   GetDispositivoByIdDto,
 } from '../../domain/dtos/dispositivos';
 import { formatErrors } from '../utils/formatErrors';
+import { RealtimeServer } from '../../infrastructure/realtime/core/realtime.server';
+import { SocketEvents } from '../../infrastructure/realtime/events/socket-event';
 
 export class DispositivoController {
   constructor() {}
@@ -464,6 +466,14 @@ export class DispositivoController {
           fecha_registro: true,
         },
       });
+
+      // Socket
+
+      RealtimeServer.getInstance().emitToDevice(
+        dispositivoExists.dispositivo_id,
+        SocketEvents.DeviceRevoked,
+        {}
+      );
 
       return res.json({
         status: 'success',

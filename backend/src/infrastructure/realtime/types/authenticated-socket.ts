@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 
 export interface SocketIdentity {
   userId: number;
-  deviceId?: number;
+  deviceId: string;
   role: string;
 }
 

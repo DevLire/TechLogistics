@@ -23,6 +23,7 @@ type SecurityState = {
   ) => Promise<boolean>;
   resetSecurity: () => void;
   setCanRegisterDevice: (canRegisterDevice: boolean) => void;
+  setIsDeviceRegistered: (isDeviceRegistered: boolean) => void;
 };
 
 export const useSecurityStore = create<SecurityState>()((set, get) => ({
@@ -43,6 +44,12 @@ export const useSecurityStore = create<SecurityState>()((set, get) => ({
   setCanRegisterDevice: (canRegisterDevice: boolean) => {
     set({
       canRegisterDevice,
+    });
+  },
+
+  setIsDeviceRegistered: (isDeviceRegistered) => {
+    set({
+      isDeviceRegistered: isDeviceRegistered,
     });
   },
 

@@ -36,13 +36,17 @@ export class RealtimeServer {
 
       const userRoom = this.getUserRoom(authSocket.identity.userId);
 
+      const deviceRoom = this.getDeviceRoom(authSocket.identity.deviceId);
+
       authSocket.join(userRoom);
+      authSocket.join(deviceRoom);
 
       console.log(`Client connected: ${authSocket.id}`);
-      console.log(`User ${authSocket.identity.userId} joined room ${userRoom}`);
+      console.log(`Joined ${userRoom}`);
+      console.log(`Joined ${deviceRoom}`);
 
       authSocket.on('disconnect', () => {
-        console.log(`User ${authSocket.identity.userId} disconnected`);
+        console.log(`User ${authSocket.identity!.userId} disconnected`);
       });
     });
   }

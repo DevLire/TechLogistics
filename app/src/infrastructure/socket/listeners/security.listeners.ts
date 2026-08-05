@@ -16,4 +16,8 @@ export function registerSecurityListeners(socket: Socket) {
   socket.on(SocketEvents.UserDisabled, () => {
     useAuthStore.getState().logout();
   });
+
+  socket.on(SocketEvents.DeviceRevoked, () => {
+    useSecurityStore.getState().setIsDeviceRegistered(false);
+  });
 }

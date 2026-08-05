@@ -27,9 +27,17 @@ export class SocketAuthMiddleware {
 
     if (!user.activo) return next(new Error('User inactive'));
 
+    // Obtenemos el id del dispositivo
+    const deviceId = socket.handshake.auth.deviceId;
+
+    if (!deviceId) {
+      return next(new Error('Device id required'));
+    }
+
     (socket as AuthenticatedSocket).identity = {
       userId: user.id_usuario,
       role: user.rol,
+      deviceId,
     };
 
     next();
