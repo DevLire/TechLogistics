@@ -5,6 +5,7 @@ import type { Socket } from 'socket.io-client';
 import { createSocket } from '@/infrastructure/socket/socket.client';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
+import { registerSocketListeners } from '@/infrastructure/socket/register-listeners';
 
 export const SocketProvider = ({ children }: PropsWithChildren) => {
   const { authStatus, token } = useAuthStore();
@@ -25,6 +26,8 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
         token,
         deviceId,
       });
+
+      registerSocketListeners(socket);
 
       socket.connect();
 
