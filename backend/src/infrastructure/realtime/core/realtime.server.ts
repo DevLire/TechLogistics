@@ -1,10 +1,12 @@
 import { Server as HttpServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+
 import { SocketAuthMiddleware } from '../middleware/socket-auth.middleware';
 import { AuthenticatedSocket } from '../types/authenticated-socket';
 
 export class RealtimeServer {
   private readonly io: SocketIOServer;
+  private static instance: RealtimeServer;
 
   constructor(server: HttpServer) {
     this.io = new SocketIOServer(server, {
@@ -13,6 +15,12 @@ export class RealtimeServer {
         credentials: true,
       },
     });
+
+    RealtimeServer.instance = this;
+  }
+
+  public static getInstance(): RealtimeServer {
+    return RealtimeServer.instance;
   }
 
   public initialize() {
@@ -21,16 +29,37 @@ export class RealtimeServer {
     this.io.on('connection', (socket) => {
       const authSocket = socket as AuthenticatedSocket;
 
-      console.log(`Client connected: ${authSocket.id}`);
+      if (!authSocket.identity) {
+        socket.disconnect(true);
+        return;
+      }
 
-      const userRoom = `user:${authSocket.identity.userId}`;
+      const userRoom = this.getUserRoom(authSocket.identity.userId);
+
       authSocket.join(userRoom);
 
-      console.log(`User ${authSocket.identity.userId} joined ${userRoom}`);
+      console.log(`Client connected: ${authSocket.id}`);
+      console.log(`User ${authSocket.identity.userId} joined room ${userRoom}`);
 
       authSocket.on('disconnect', () => {
         console.log(`User ${authSocket.identity.userId} disconnected`);
       });
     });
+  }
+
+  public emitToUser(userId: number, event: string, payload: unknown): void {
+    this.io.to(this.getUserRoom(userId)).emit(event, payload);
+  }
+
+  public emitToDevice(deviceId: string, event: string, payload: unknown): void {
+    this.io.to(this.getDeviceRoom(deviceId)).emit(event, payload);
+  }
+
+  private getUserRoom(userId: number): string {
+    return `user:${userId}`;
+  }
+
+  private getDeviceRoom(deviceId: string): string {
+    return `device:${deviceId}`;
   }
 }

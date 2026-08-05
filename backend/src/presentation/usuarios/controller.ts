@@ -7,6 +7,8 @@ import {
   GetUserByIdDto,
 } from '../../domain/dtos/usuarios';
 import { formatErrors } from '../utils/formatErrors';
+import { RealtimeServer } from '../../infrastructure/realtime/core/realtime.server';
+import { SocketEvents } from '../../infrastructure/realtime/events/socket-event';
 
 export class UsuarioController {
   constructor() {}
@@ -251,6 +253,22 @@ export class UsuarioController {
           permite_fallback_password: true,
         },
       });
+
+      // Socket
+
+      const registrationPermissionChanged =
+        user.puede_registrar_dispositivo !==
+        updatedUser.puede_registrar_dispositivo;
+
+      if (registrationPermissionChanged) {
+        RealtimeServer.getInstance().emitToUser(
+          updatedUser.id_usuario,
+          SocketEvents.RegistrationPermissionUpdated,
+          {
+            canRegisterDevice: updatedUser.puede_registrar_dispositivo,
+          }
+        );
+      }
 
       res.json({
         status: 'success',
