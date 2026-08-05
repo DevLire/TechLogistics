@@ -325,6 +325,17 @@ export class UsuarioController {
           permite_fallback_password: true,
         },
       });
+
+      // Socket
+
+      RealtimeServer.getInstance().emitToUser(
+        deletedUser.id_usuario,
+        SocketEvents.UserDisabled,
+        {
+          reason: 'USER_DISABLED',
+        }
+      );
+
       return res.json({
         status: 'success',
         message: 'Usuario eliminado correctamente',
