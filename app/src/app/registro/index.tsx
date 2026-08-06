@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Keyboard } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { toast } from 'sonner-native';
@@ -26,6 +26,7 @@ const RegistroScreen = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    Keyboard.dismiss();
     if (!password.trim()) {
       toast.error('Contraseña obligatoria', {
         description: 'Por favor, Ingrese su contraseña',

@@ -3,13 +3,7 @@ import { useAssets } from 'expo-asset';
 import { StatusBar, useColorScheme } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import {
-  SplashScreen,
-  Stack,
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import '../../global.css';
 import { Toaster } from 'sonner-native';
@@ -19,6 +13,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DeviceCheckerProvider } from '@/presentation/providers/DeviceCheckerProvider';
 import { NavigationBar } from 'expo-navigation-bar';
 import { SocketProvider } from '@/presentation/providers/SocketProvider';
+import { ThemeChangerProvider } from '@/presentation/context/ThemeChangerProvider';
 
 const queryClient = new QueryClient();
 
@@ -69,9 +64,7 @@ const RootLayout = () => {
       />
       <NavigationBar style="light" />
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider
-          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-        >
+        <ThemeChangerProvider>
           <PaperProvider>
             <AuthProvider>
               <DeviceCheckerProvider>
@@ -87,7 +80,7 @@ const RootLayout = () => {
             </AuthProvider>
           </PaperProvider>
           <Toaster position="bottom-center" />
-        </ThemeProvider>
+        </ThemeChangerProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

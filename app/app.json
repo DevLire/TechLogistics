@@ -2,13 +2,13 @@
   "expo": {
     "name": "TechLogistics",
     "slug": "TechLogistics",
-    "version": "1.0.0",
+    "version": "1.5.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "techlogistics",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "bundleIdentifier": "com.anonymous.TechLogistics"
+      "bundleIdentifier": "dev.devlire.techlogistics"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/adaptative-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.TechLogistics"
+      "package": "dev.devlire.techlogistics"
     },
     "web": {
       "output": "static",

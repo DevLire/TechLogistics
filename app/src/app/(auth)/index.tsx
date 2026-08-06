@@ -1,26 +1,28 @@
-import { regularExps } from '@/config/regular-exp';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
-import { ThemedButton } from '@/presentation/components/ThemedButton';
-import { ThemedInput } from '@/presentation/components/ThemedInput';
-import { ThemedText } from '@/presentation/components/ThemedText';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { ImageBackground } from 'expo-image';
-import { router } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { View, Keyboard } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { router } from 'expo-router';
+import { ImageBackground } from 'expo-image';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { toast } from 'sonner-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+import { ThemedText } from '@/presentation/components/ThemedText';
+import { ThemedInput } from '@/presentation/components/ThemedInput';
+import { ThemedButton } from '@/presentation/components/ThemedButton';
+import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
+import { useAuthStore } from '@/stores/auth/useAuthStore';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { regularExps } from '@/config/regular-exp';
+import { AppFooter } from '@/presentation/components/AppFooter';
 
 const bgLight = require('@/assets/loginLightBg.png');
 const bgDark = require('@/assets/loginDarkBg.png');
 
 const LoginScreen = () => {
   const colorScheme = useColorScheme();
-  const safeArea = useSafeAreaInsets();
   const { login } = useAuthStore();
 
   const [form, setForm] = useState({
@@ -30,6 +32,7 @@ const LoginScreen = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async () => {
+    Keyboard.dismiss();
     if (!form.email.trim() || !form.password.trim()) {
       toast.error('Campos obligatorios', {
         description: 'Por favor, llena todos los campos.',
@@ -131,17 +134,7 @@ const LoginScreen = () => {
         </View>
 
         {/* Derechos */}
-        <View
-          className="absolute w-full items-center"
-          style={{ bottom: safeArea.bottom + 10 }}
-        >
-          <ThemedText
-            className="text-text-inverse dark:text-text"
-            type="normal"
-          >
-            Todos los derechos reservados ©
-          </ThemedText>
-        </View>
+        <AppFooter variant="inverted" />
       </KeyboardAwareScrollView>
     </ImageBackground>
   );
