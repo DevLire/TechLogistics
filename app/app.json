@@ -8,7 +8,7 @@
     "scheme": "techlogistics",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "bundleIdentifier": "com.anonymous.TechLogistics"
+      "bundleIdentifier": "dev.devlire.techlogistics"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/adaptative-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.TechLogistics"
+      "package": "dev.devlire.techlogistics"
     },
     "web": {
       "output": "static",
