@@ -325,6 +325,16 @@ export class DispositivoController {
         }),
       ]);
 
+      // Socket
+
+      RealtimeServer.getInstance().emitToUser(
+        usuario.id_usuario,
+        SocketEvents.RegistrationPermissionUpdated,
+        {
+          canRegisterDevice: false,
+        }
+      );
+
       res.status(201).json({
         status: 'success',
         message:
