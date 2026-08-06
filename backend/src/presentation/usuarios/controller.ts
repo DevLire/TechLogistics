@@ -256,6 +256,8 @@ export class UsuarioController {
 
       // Socket
 
+      // Registrar dispositivo permiso
+
       const registrationPermissionChanged =
         user.puede_registrar_dispositivo !==
         updatedUser.puede_registrar_dispositivo;
@@ -266,6 +268,22 @@ export class UsuarioController {
           SocketEvents.RegistrationPermissionUpdated,
           {
             canRegisterDevice: updatedUser.puede_registrar_dispositivo,
+          }
+        );
+      }
+
+      // Fallback password permiso
+
+      const passwordFallbackPermissionChanged =
+        user.permite_fallback_password !==
+        updatedUser.permite_fallback_password;
+
+      if (passwordFallbackPermissionChanged) {
+        RealtimeServer.getInstance().emitToUser(
+          updatedUser.id_usuario,
+          SocketEvents.PasswordFallbackPermissionUpdated,
+          {
+            allowPasswordFallback: updatedUser.permite_fallback_password,
           }
         );
       }

@@ -4,4 +4,7 @@ export const SocketEvents = {
   UserDisabled: 'security:user-disabled',
 
   DeviceRevoked: 'security:device-revoked',
+
+  PasswordFallbackPermissionUpdated:
+    'security:password-fallback-permisison-updated',
 } as const;

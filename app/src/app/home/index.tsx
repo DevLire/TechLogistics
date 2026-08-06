@@ -142,7 +142,7 @@ const HomeScreen = () => {
           isSubmitting={isSubmitting}
           passwordValue={password}
           title="Ingreso al almacén"
-          visible={isModalVisible}
+          visible={isModalVisible && allowPasswordFallback}
           onDismiss={() => setIsModalVisible(false)}
           onPasswordChange={(value) => setPassword(value)}
           onPress={handleSubmit}

@@ -24,6 +24,7 @@ type SecurityState = {
   resetSecurity: () => void;
   setCanRegisterDevice: (canRegisterDevice: boolean) => void;
   setIsDeviceRegistered: (isDeviceRegistered: boolean) => void;
+  setAllowPasswordFallback: (allowPasswordFallback: boolean) => void;
 };
 
 export const useSecurityStore = create<SecurityState>()((set, get) => ({
@@ -50,6 +51,12 @@ export const useSecurityStore = create<SecurityState>()((set, get) => ({
   setIsDeviceRegistered: (isDeviceRegistered) => {
     set({
       isDeviceRegistered: isDeviceRegistered,
+    });
+  },
+
+  setAllowPasswordFallback: (allowPasswordFallback) => {
+    set({
+      allowPasswordFallback: allowPasswordFallback,
     });
   },
 

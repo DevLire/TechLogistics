@@ -3,7 +3,10 @@ import type { Socket } from 'socket.io-client';
 import { SocketEvents } from '@/infrastructure/socket/events/socket-event';
 import { useSecurityStore } from '@/stores/security/useSecurityStore';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
-import type { RegistrationPermissionPayload } from '@/infrastructure/socket/events/security.payloads';
+import type {
+  PasswordFallbackPermissionPayload,
+  RegistrationPermissionPayload,
+} from '@/infrastructure/socket/events/security.payloads';
 
 export function registerSecurityListeners(socket: Socket) {
   socket.on(
@@ -20,4 +23,13 @@ export function registerSecurityListeners(socket: Socket) {
   socket.on(SocketEvents.DeviceRevoked, () => {
     useSecurityStore.getState().setIsDeviceRegistered(false);
   });
+
+  socket.on(
+    SocketEvents.PasswordFallbackPermissionUpdated,
+    ({ allowPasswordFallback }: PasswordFallbackPermissionPayload) => {
+      useSecurityStore
+        .getState()
+        .setAllowPasswordFallback(allowPasswordFallback);
+    }
+  );
 }
