@@ -1,6 +1,7 @@
-import { Stack } from 'expo-router';
-import { View, ScrollView, ActivityIndicator } from 'react-native';
 import { List } from 'react-native-paper';
+import { View, ScrollView, ActivityIndicator } from 'react-native';
+
+import { Stack } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQuery } from '@tanstack/react-query';
 
@@ -12,6 +13,8 @@ import { useTheme } from '@/hooks/use-theme';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { capitalize } from '@/lib/utils';
 import { getUserStatsAction } from '@/core/actions/users/get-stats.action';
+import { ThemedSwitch } from '@/presentation/components/ThemedSwitch';
+import { useThemePreferences } from '@/hooks/use-theme-preferences';
 
 const ProfileScreen = () => {
   const { user, logout } = useAuthStore();
@@ -25,7 +28,8 @@ const ProfileScreen = () => {
     queryFn: getUserStatsAction,
   });
 
-  console.log({ stats });
+  const { darkModeSettings, setDarkMode, setSystemMode } =
+    useThemePreferences();
 
   return (
     <>
@@ -65,8 +69,49 @@ const ProfileScreen = () => {
             </View>
           </ThemedView>
 
-          {/* Opciones del Perfil */}
-          <ThemedView className="mt-6 px-4">
+          {/* Opciones */}
+          <ThemedView className="px-4">
+            {/* Sección: Tema */}
+            <List.Section
+              title="Tema"
+              titleStyle={{ fontSize: 16, fontWeight: 'bold' }}
+            >
+              <ThemedView className="bg-surface min-h-[70px] justify-center overflow-hidden rounded-2xl">
+                <List.Item
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      color={textColor}
+                      icon="weather-night"
+                    />
+                  )}
+                  right={() => (
+                    <ThemedSwitch
+                      value={darkModeSettings.darkMode}
+                      onValueChange={setDarkMode}
+                    />
+                  )}
+                  title="Modo Oscuro"
+                />
+                <List.Item
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      color={textColor}
+                      icon="cellphone-settings"
+                    />
+                  )}
+                  right={() => (
+                    <ThemedSwitch
+                      value={darkModeSettings.systemMode}
+                      onValueChange={setSystemMode}
+                    />
+                  )}
+                  title="Sistema"
+                />
+              </ThemedView>
+            </List.Section>
+
             {/* Sección: Seguridad y Dispositivo */}
             <List.Section
               title="Seguridad y Acceso"
@@ -145,7 +190,7 @@ const ProfileScreen = () => {
                 Cerrar sesión de forma segura
               </ThemedButton>
               <ThemedText className="mt-4 text-center text-xs dark:text-white/30">
-                TechLogistics App v1.0.0
+                TechLogistics App v1.0.5
               </ThemedText>
             </View>
           </ThemedView>
