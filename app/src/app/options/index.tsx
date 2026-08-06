@@ -3,6 +3,7 @@ import { View, ScrollView, ActivityIndicator } from 'react-native';
 
 import { Stack } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { useQuery } from '@tanstack/react-query';
 
 import { ThemedView } from '@/presentation/components/ThemedView';
@@ -15,6 +16,7 @@ import { capitalize } from '@/lib/utils';
 import { getUserStatsAction } from '@/core/actions/users/get-stats.action';
 import { ThemedSwitch } from '@/presentation/components/ThemedSwitch';
 import { useThemePreferences } from '@/hooks/use-theme-preferences';
+import { AppFooter } from '@/presentation/components/AppFooter';
 
 const ProfileScreen = () => {
   const { user, logout } = useAuthStore();
@@ -42,7 +44,7 @@ const ProfileScreen = () => {
       />
       <ThemedView className="flex-1">
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
         >
           {/* Cabecera / Identificación */}
@@ -189,10 +191,8 @@ const ProfileScreen = () => {
               >
                 Cerrar sesión de forma segura
               </ThemedButton>
-              <ThemedText className="mt-4 text-center text-xs dark:text-white/30">
-                TechLogistics App v1.0.5
-              </ThemedText>
             </View>
+            <AppFooter className="mt-6" position="relative" />
           </ThemedView>
         </ScrollView>
       </ThemedView>

@@ -17,6 +17,7 @@ import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsI
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { regularExps } from '@/config/regular-exp';
+import { AppFooter } from '@/presentation/components/AppFooter';
 
 const bgLight = require('@/assets/loginLightBg.png');
 const bgDark = require('@/assets/loginDarkBg.png');
@@ -135,17 +136,7 @@ const LoginScreen = () => {
         </View>
 
         {/* Derechos */}
-        <View
-          className="absolute w-full items-center"
-          style={{ bottom: safeArea.bottom + 10 }}
-        >
-          <ThemedText
-            className="text-text-inverse dark:text-text"
-            type="normal"
-          >
-            Todos los derechos reservados ©
-          </ThemedText>
-        </View>
+        <AppFooter variant="inverted" />
       </KeyboardAwareScrollView>
     </ImageBackground>
   );
