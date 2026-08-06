@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Keyboard } from 'react-native';
 import { router, Stack } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { toast } from 'sonner-native';
@@ -36,6 +36,7 @@ const HomeScreen = () => {
           : 'Buenas noches';
 
   const handleSubmit = async () => {
+    Keyboard.dismiss();
     if (!password.trim()) {
       toast.error('Contraseña obligatoria', {
         description: 'Por favor, Ingrese su contraseña',
