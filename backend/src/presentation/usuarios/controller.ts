@@ -7,6 +7,8 @@ import {
   GetUserByIdDto,
 } from '../../domain/dtos/usuarios';
 import { formatErrors } from '../utils/formatErrors';
+import { RealtimeServer } from '../../infrastructure/realtime/core/realtime.server';
+import { SocketEvents } from '../../infrastructure/realtime/events/socket-event';
 
 export class UsuarioController {
   constructor() {}
@@ -252,6 +254,40 @@ export class UsuarioController {
         },
       });
 
+      // Socket
+
+      // Registrar dispositivo permiso
+
+      const registrationPermissionChanged =
+        user.puede_registrar_dispositivo !==
+        updatedUser.puede_registrar_dispositivo;
+
+      if (registrationPermissionChanged) {
+        RealtimeServer.getInstance().emitToUser(
+          updatedUser.id_usuario,
+          SocketEvents.RegistrationPermissionUpdated,
+          {
+            canRegisterDevice: updatedUser.puede_registrar_dispositivo,
+          }
+        );
+      }
+
+      // Fallback password permiso
+
+      const passwordFallbackPermissionChanged =
+        user.permite_fallback_password !==
+        updatedUser.permite_fallback_password;
+
+      if (passwordFallbackPermissionChanged) {
+        RealtimeServer.getInstance().emitToUser(
+          updatedUser.id_usuario,
+          SocketEvents.PasswordFallbackPermissionUpdated,
+          {
+            allowPasswordFallback: updatedUser.permite_fallback_password,
+          }
+        );
+      }
+
       res.json({
         status: 'success',
         message: 'Usuario actualizado correctamente',
@@ -307,6 +343,17 @@ export class UsuarioController {
           permite_fallback_password: true,
         },
       });
+
+      // Socket
+
+      RealtimeServer.getInstance().emitToUser(
+        deletedUser.id_usuario,
+        SocketEvents.UserDisabled,
+        {
+          reason: 'USER_DISABLED',
+        }
+      );
+
       return res.json({
         status: 'success',
         message: 'Usuario eliminado correctamente',

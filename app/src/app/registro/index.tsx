@@ -133,7 +133,7 @@ const RegistroScreen = () => {
         isSubmitting={isSubmitting}
         passwordValue={password}
         title="Registrar Dispositivo"
-        visible={isModalVisible}
+        visible={isModalVisible && allowPasswordFallback}
         onDismiss={() => setIsModalVisible(false)}
         onPasswordChange={(value) => setPassword(value)}
         onPress={handleSubmit}

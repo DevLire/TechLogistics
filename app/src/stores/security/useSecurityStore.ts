@@ -22,6 +22,9 @@ type SecurityState = {
     metodo: 'HUELLA' | 'PASSWORD'
   ) => Promise<boolean>;
   resetSecurity: () => void;
+  setCanRegisterDevice: (canRegisterDevice: boolean) => void;
+  setIsDeviceRegistered: (isDeviceRegistered: boolean) => void;
+  setAllowPasswordFallback: (allowPasswordFallback: boolean) => void;
 };
 
 export const useSecurityStore = create<SecurityState>()((set, get) => ({
@@ -36,6 +39,24 @@ export const useSecurityStore = create<SecurityState>()((set, get) => ({
       canRegisterDevice: flags.canRegisterDevice,
       allowPasswordFallback: flags.allowPasswordFallback,
       isCheckingSecurity: false,
+    });
+  },
+
+  setCanRegisterDevice: (canRegisterDevice: boolean) => {
+    set({
+      canRegisterDevice,
+    });
+  },
+
+  setIsDeviceRegistered: (isDeviceRegistered) => {
+    set({
+      isDeviceRegistered: isDeviceRegistered,
+    });
+  },
+
+  setAllowPasswordFallback: (allowPasswordFallback) => {
+    set({
+      allowPasswordFallback: allowPasswordFallback,
     });
   },
 
