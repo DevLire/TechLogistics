@@ -1,7 +1,12 @@
 import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
+import * as Device from 'expo-device';
+import { Platform } from 'react-native';
 
-const SOCKET_URL = process.env.EXPO_PUBLIC_SOCKET_URL;
+const SOCKET_URL =
+  Platform.OS === 'android' && !Device.isDevice
+    ? 'http://10.0.2.2:3000'
+    : 'http://192.168.1.253:3000';
 
 interface CreateSocketOptions {
   token: string;
@@ -12,10 +17,6 @@ export const createSocket = ({
   token,
   deviceId,
 }: CreateSocketOptions): Socket => {
-  if (!SOCKET_URL) {
-    throw new Error('EXPO_PUBLIC_SOCKET_URL no está configurada');
-  }
-
   return io(SOCKET_URL, {
     autoConnect: false,
     auth: {
