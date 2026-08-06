@@ -19,7 +19,13 @@ export class AuthController {
       // Verificar si el correo existe
       const user = await prisma.usuario.findUnique({
         where: { email: loginDto!.email },
-        include: { dispositivos: true },
+        include: {
+          dispositivos: {
+            where: {
+              activo: true,
+            },
+          },
+        },
       });
 
       if (!user || !user.activo) {
@@ -99,7 +105,18 @@ export class AuthController {
 
   public checkAuthStatusUser = async (req: Request, res: Response) => {
     const user = (req as any).user;
-    const { password, ...userEntity } = user;
+    const { _password } = user;
+
+    const updatedUser = await prisma.usuario.findUnique({
+      where: { email: user!.email },
+      include: {
+        dispositivos: {
+          where: {
+            activo: true,
+          },
+        },
+      },
+    });
 
     const deviceId = req.headers['x-device-id'];
 
@@ -121,7 +138,7 @@ export class AuthController {
 
     return res.json({
       status: 'success',
-      user: userEntity,
+      user: updatedUser,
       token: token,
       security: {
         isDeviceRegistered: isDeviceRegistered,
