@@ -8,7 +8,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { toast } from 'sonner-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/presentation/components/ThemedText';
 import { ThemedInput } from '@/presentation/components/ThemedInput';
@@ -24,7 +23,6 @@ const bgDark = require('@/assets/loginDarkBg.png');
 
 const LoginScreen = () => {
   const colorScheme = useColorScheme();
-  const safeArea = useSafeAreaInsets();
   const { login } = useAuthStore();
 
   const [form, setForm] = useState({

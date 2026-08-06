@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { TouchableOpacity, View, Keyboard } from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Keyboard,
+  useWindowDimensions,
+} from 'react-native';
 import { router, Stack } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { toast } from 'sonner-native';
@@ -24,6 +29,10 @@ const HomeScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { height } = useWindowDimensions();
+
+  const fingerprintSize = height * 0.38;
 
   const hours = new Date().getHours();
   const labelBienvenida =
@@ -119,14 +128,22 @@ const HomeScreen = () => {
           </ThemedText>
         </ThemedView>
 
+        {/* Huella */}
         <View className="items-center justify-center">
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => handleBiometricAuth()}
           >
-            <Ionicons className="color-text" name="finger-print" size={300} />
+            <Ionicons
+              className="color-text"
+              name="finger-print"
+              size={fingerprintSize}
+            />
           </TouchableOpacity>
+        </View>
 
+        {/* Password Fallback */}
+        <View className="absolute bottom-20 w-full items-center">
           {allowPasswordFallback && (
             <ThemedText
               className="mt-5"
