@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react';
 import { useEffect, useRef } from 'react';
 import { router, useSegments } from 'expo-router';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useSecurityStore } from '@/stores/security/useSecurityStore';
+import { useAuthStore } from '@/stores/auth/use-auth-store';
+import { useSecurityStore } from '@/stores/security/use-security-store';
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const { authStatus, checkAuthStatus } = useAuthStore();

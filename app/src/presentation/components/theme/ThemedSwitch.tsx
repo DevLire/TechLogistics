@@ -1,4 +1,4 @@
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/presentation/hooks/use-theme';
 import { Platform, Pressable, Switch, View } from 'react-native';
 import { ThemedText } from './ThemedText';
 

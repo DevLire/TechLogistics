@@ -5,7 +5,7 @@ import { checkAuthAction } from '@/core/actions/auth/check-auth.action';
 import { loginAction } from '@/core/actions/auth/login.action';
 import * as SecureStore from 'expo-secure-store';
 import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
-import { useSecurityStore } from '@/stores/security/useSecurityStore';
+import { useSecurityStore } from '@/stores/security/use-security-store';
 
 type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 

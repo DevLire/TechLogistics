@@ -1,6 +1,6 @@
 import { ImageBackground } from 'expo-image';
 import { ActivityIndicator, View } from 'react-native';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColorScheme } from '@/presentation/hooks/use-color-scheme';
 import { ThemedText } from '@/presentation/components/theme/ThemedText';
 
 const bgLight = require('@/assets/loginLightBg.png');

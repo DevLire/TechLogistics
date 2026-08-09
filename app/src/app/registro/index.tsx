@@ -10,9 +10,9 @@ import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
 import { AuthModal } from '@/presentation/components/auth/AuthModal';
 
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useSecurityStore } from '@/stores/security/useSecurityStore';
-import { useRegisterDevice } from '@/presentation/hooks/useRegisterDevice';
+import { useAuthStore } from '@/stores/auth/use-auth-store';
+import { useSecurityStore } from '@/stores/security/use-security-store';
+import { useRegisterDevice } from '@/presentation/hooks/use-register-device';
 
 const RegistroScreen = () => {
   const { user, logout, revalidatePassword } = useAuthStore();

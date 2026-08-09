@@ -13,8 +13,8 @@ import { ThemedText } from '@/presentation/components/theme/ThemedText';
 import { ThemedInput } from '@/presentation/components/theme/ThemedInput';
 import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuthStore } from '@/stores/auth/use-auth-store';
+import { useColorScheme } from '@/presentation/hooks/use-color-scheme';
 import { regularExps } from '@/config/regular-exp';
 import { AppFooter } from '@/presentation/components/AppFooter';
 
