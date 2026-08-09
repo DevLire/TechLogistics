@@ -9,6 +9,7 @@ import {
 import { formatErrors } from '../utils/formatErrors';
 import { RealtimeServer } from '../../infrastructure/realtime/core/realtime.server';
 import { SocketEvents } from '../../infrastructure/realtime/events/socket-event';
+import { bcryptAdapter } from '../../config/bcrypt.adapter';
 
 export class UsuarioController {
   constructor() {}
@@ -165,11 +166,13 @@ export class UsuarioController {
         });
       }
 
+      const hashedPassword = await bcryptAdapter.hash(createUserDto!.password);
+
       const user = await prisma.usuario.create({
         data: {
           nombre: createUserDto!.nombre,
           email: createUserDto!.email,
-          password: createUserDto!.password,
+          password: hashedPassword,
           rol: createUserDto!.rol as any,
         },
         select: {
