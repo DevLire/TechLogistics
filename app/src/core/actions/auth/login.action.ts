@@ -1,4 +1,4 @@
-import { api } from '@/core/api/api';
+import { api } from '@/infrastructure/api/api';
 import type { AuthResponse } from '@/infrastructure/interfaces/responses/auth.response';
 
 export const loginAction = async (
