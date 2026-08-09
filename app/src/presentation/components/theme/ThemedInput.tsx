@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 import { TextInput } from 'react-native-paper';
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/presentation/hooks/use-theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';

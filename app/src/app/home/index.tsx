@@ -9,15 +9,15 @@ import { router, Stack } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { toast } from 'sonner-native';
 
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/presentation/hooks/use-theme';
 import { AuthModal } from '@/presentation/components/auth/AuthModal';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
-import { ThemedText } from '@/presentation/components/ThemedText';
-import { ThemedView } from '@/presentation/components/ThemedView';
+import { ThemedText } from '@/presentation/components/theme/ThemedText';
+import { ThemedView } from '@/presentation/components/theme/ThemedView';
 
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useSecurityStore } from '@/stores/security/useSecurityStore';
-import { useRegisterDevice } from '@/presentation/hooks/useRegisterDevice';
+import { useAuthStore } from '@/stores/auth/use-auth-store';
+import { useSecurityStore } from '@/stores/security/use-security-store';
+import { useRegisterDevice } from '@/presentation/hooks/use-register-device';
 import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
 
 const HomeScreen = () => {

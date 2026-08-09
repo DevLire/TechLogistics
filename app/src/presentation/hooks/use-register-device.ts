@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router';
 import { toast } from 'sonner-native';
 import * as Device from 'expo-device';
 
-import { useAuthStore } from '@/stores/auth/useAuthStore';
-import { useSecurityStore } from '@/stores/security/useSecurityStore';
+import { useAuthStore } from '@/stores/auth/use-auth-store';
+import { useSecurityStore } from '@/stores/security/use-security-store';
 import {
   loggerDeviceLocally,
   verifyLocalFingerprint,

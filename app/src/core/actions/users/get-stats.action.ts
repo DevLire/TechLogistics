@@ -1,4 +1,4 @@
-import { api } from '@/core/api/api';
+import { api } from '@/infrastructure/api/api';
 
 export interface UserStats {
   ultimo_ingreso: string | null;

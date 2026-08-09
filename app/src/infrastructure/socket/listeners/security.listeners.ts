@@ -1,8 +1,8 @@
 import type { Socket } from 'socket.io-client';
 
 import { SocketEvents } from '@/infrastructure/socket/events/socket-event';
-import { useSecurityStore } from '@/stores/security/useSecurityStore';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
+import { useSecurityStore } from '@/stores/security/use-security-store';
+import { useAuthStore } from '@/stores/auth/use-auth-store';
 import type {
   PasswordFallbackPermissionPayload,
   RegistrationPermissionPayload,

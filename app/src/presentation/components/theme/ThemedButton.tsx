@@ -1,4 +1,4 @@
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/presentation/hooks/use-theme';
 import { cn } from '@/lib/utils';
 import type Ionicons from '@expo/vector-icons/Ionicons';
 import type { ComponentProps } from 'react';

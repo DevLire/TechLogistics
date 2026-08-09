@@ -2,10 +2,10 @@ import type { ComponentProps, JSX } from 'react';
 import { View } from 'react-native';
 import type { TextInput } from 'react-native-paper';
 import { Modal, Portal } from 'react-native-paper';
-import { ThemedView } from '@/presentation/components/ThemedView';
-import { ThemedText } from '@/presentation/components/ThemedText';
-import { ThemedInput } from '@/presentation/components/ThemedInput';
-import { ThemedButton } from '@/presentation/components/ThemedButton';
+import { ThemedView } from '@/presentation/components/theme/ThemedView';
+import { ThemedText } from '@/presentation/components/theme/ThemedText';
+import { ThemedInput } from '@/presentation/components/theme/ThemedInput';
+import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 
 interface Props extends ComponentProps<typeof ThemedView> {
   visible: boolean;

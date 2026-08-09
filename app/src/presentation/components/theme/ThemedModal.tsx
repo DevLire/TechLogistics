@@ -1,8 +1,8 @@
 import type { ComponentProps } from 'react';
 import { View } from 'react-native';
 import { Modal, Portal } from 'react-native-paper';
-import { ThemedView } from '@/presentation/components/ThemedView';
-import { ThemedText } from '@/presentation/components/ThemedText';
+import { ThemedView } from '@/presentation/components/theme/ThemedView';
+import { ThemedText } from '@/presentation/components/theme/ThemedText';
 
 interface Props extends ComponentProps<typeof ThemedView> {
   visible: boolean;

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import type { Socket } from 'socket.io-client';
 
 import { createSocket } from '@/infrastructure/socket/socket.client';
-import { useAuthStore } from '@/stores/auth/useAuthStore';
+import { useAuthStore } from '@/stores/auth/use-auth-store';
 import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
 import { registerSocketListeners } from '@/infrastructure/socket/register-listeners';
 

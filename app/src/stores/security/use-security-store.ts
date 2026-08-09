@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { useAuthStore } from '../auth/useAuthStore';
+import { useAuthStore } from '../auth/use-auth-store';
 
 import { registerDeviceAction } from '@/core/actions/security/register-device.action';
 import { logAccesoAction } from '@/core/actions/security/log-acceso.action';

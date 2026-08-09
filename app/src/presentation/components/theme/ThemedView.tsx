@@ -1,6 +1,6 @@
 import type { ViewProps } from 'react-native';
 import { View } from 'react-native';
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/presentation/hooks/use-theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { cn } from '@/lib/utils';
 

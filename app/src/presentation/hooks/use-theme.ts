@@ -5,7 +5,7 @@
 
 import type { ThemeColor } from '@/constants/theme';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColorScheme } from '@/presentation/hooks/use-color-scheme';
 
 interface UseThemeProps {
   light?: string;

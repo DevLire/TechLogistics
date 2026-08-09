@@ -7,7 +7,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import '../../global.css';
 import { Toaster } from 'sonner-native';
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/presentation/hooks/use-theme';
 import { AuthProvider } from '@/presentation/providers/AuthProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DeviceCheckerProvider } from '@/presentation/providers/DeviceCheckerProvider';
