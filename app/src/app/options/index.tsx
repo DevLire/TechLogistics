@@ -6,15 +6,15 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { ThemedView } from '@/presentation/components/ThemedView';
-import { ThemedText } from '@/presentation/components/ThemedText';
-import { ThemedButton } from '@/presentation/components/ThemedButton';
+import { ThemedView } from '@/presentation/components/theme/ThemedView';
+import { ThemedText } from '@/presentation/components/theme/ThemedText';
+import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 import { useTheme } from '@/hooks/use-theme';
 
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { capitalize } from '@/lib/utils';
 import { getUserStatsAction } from '@/core/actions/users/get-stats.action';
-import { ThemedSwitch } from '@/presentation/components/ThemedSwitch';
+import { ThemedSwitch } from '@/presentation/components/theme/ThemedSwitch';
 import { useThemePreferences } from '@/hooks/use-theme-preferences';
 import { AppFooter } from '@/presentation/components/AppFooter';
 

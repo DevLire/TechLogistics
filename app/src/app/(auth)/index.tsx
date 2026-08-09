@@ -9,9 +9,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { toast } from 'sonner-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { ThemedText } from '@/presentation/components/ThemedText';
-import { ThemedInput } from '@/presentation/components/ThemedInput';
-import { ThemedButton } from '@/presentation/components/ThemedButton';
+import { ThemedText } from '@/presentation/components/theme/ThemedText';
+import { ThemedInput } from '@/presentation/components/theme/ThemedInput';
+import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { useColorScheme } from '@/hooks/use-color-scheme';

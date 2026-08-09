@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { nativeApplicationVersion } from 'expo-application';
 
-import { ThemedText } from '@/presentation/components/ThemedText';
+import { ThemedText } from '@/presentation/components/theme/ThemedText';
 
 import type { ViewProps } from 'react-native';
 import { cn } from '@/lib/utils';

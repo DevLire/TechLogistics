@@ -4,9 +4,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { toast } from 'sonner-native';
 
-import { ThemedView } from '@/presentation/components/ThemedView';
-import { ThemedText } from '@/presentation/components/ThemedText';
-import { ThemedButton } from '@/presentation/components/ThemedButton';
+import { ThemedView } from '@/presentation/components/theme/ThemedView';
+import { ThemedText } from '@/presentation/components/theme/ThemedText';
+import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
 import { AuthModal } from '@/presentation/components/auth/AuthModal';
 

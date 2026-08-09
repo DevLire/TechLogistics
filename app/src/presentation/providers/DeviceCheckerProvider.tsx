@@ -3,8 +3,8 @@ import { View, StyleSheet } from 'react-native';
 import { ImageBackground } from 'expo-image';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-import { ThemedModal } from '@/presentation/components/ThemedModal';
-import { ThemedButton } from '@/presentation/components/ThemedButton';
+import { ThemedModal } from '@/presentation/components/theme/ThemedModal';
+import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 
 import { useAuthStore } from '@/stores/auth/useAuthStore';
 import { useSecurityStore } from '@/stores/security/useSecurityStore';
