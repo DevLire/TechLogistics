@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../data/posgres';
 import { formatErrors } from '../utils/formatErrors';
+import { bcryptAdapter } from '../../config/bcrypt.adapter';
 
 const getPastDate = (daysBack: number, hourOffset = 0) => {
   const date = new Date();
@@ -47,7 +48,7 @@ export class SeedController {
 
       console.log('Iniciando sembrado de datos...');
 
-      const usuariosData = [
+      const rawUsuariosData = [
         {
           nombre: 'Administrador TechLogistics',
           email: 'administrador@techlogistics.com',
@@ -67,7 +68,7 @@ export class SeedController {
           permite_fallback_password: false,
         },
         {
-          nombre: 'Operario TechLogistics', // Caso 1: Acceso normal con huella
+          nombre: 'Operario TechLogistics',
           email: 'operario@techlogistics.com',
           password: '123456',
           rol: 'OPERARIO' as const,
@@ -76,7 +77,7 @@ export class SeedController {
           permite_fallback_password: false,
         },
         {
-          nombre: 'Carla Mendoza', // Caso 2: Tiene dispositivo, permite password
+          nombre: 'Carla Mendoza',
           email: 'carla.mendoza@techlogistics.com',
           password: '123456',
           rol: 'OPERARIO' as const,
@@ -85,7 +86,7 @@ export class SeedController {
           permite_fallback_password: true,
         },
         {
-          nombre: 'Luis Torres', // Caso 3: SIN dispositivo, PERO puede registrarlo (y no usa password)
+          nombre: 'Luis Torres',
           email: 'luis.torres@techlogistics.com',
           password: '123456',
           rol: 'OPERARIO' as const,
@@ -95,7 +96,7 @@ export class SeedController {
         },
         {
           nombre: 'María Salazar',
-          email: 'maria.salazar@techlogistics.com', // Caso 4: SIN dispositivo, PERO puede registrarlo (usa password)
+          email: 'maria.salazar@techlogistics.com',
           password: '123456',
           rol: 'OPERARIO' as const,
           activo: true,
@@ -104,9 +105,9 @@ export class SeedController {
         },
         {
           nombre: 'Jorge Ramírez',
-          email: 'jorge.ramirez@techlogistics.com', // Caso 5: SIN dispositivo, NO puede registrarlo (Modal de bloqueo)
+          email: 'jorge.ramirez@techlogistics.com',
           password: '123456',
-          rol: 'OPERARIO' as const,
+          rol: 'SUPERVISOR' as const,
           activo: true,
           puede_registrar_dispositivo: false,
           permite_fallback_password: false,
@@ -139,6 +140,14 @@ export class SeedController {
           permite_fallback_password: false,
         },
       ];
+
+      // Mapeamos el arreglo para aplicar el hash a cada contraseña y esperamos que todas las promesas se resuelvan
+      const usuariosData = await Promise.all(
+        rawUsuariosData.map(async (user) => ({
+          ...user,
+          password: await bcryptAdapter.hash(user.password),
+        }))
+      );
 
       await prisma.usuario.createMany({
         data: usuariosData,
@@ -270,7 +279,7 @@ export class SeedController {
       const usuariosConDispositivo = [1, 2, 3, 4, 7, 8, 9, 10];
 
       const modelosReales = [
-        '22111317PG', // Poco / Xiaomi
+        '33197312PG', // Poco / Xiaomi
         'SM-G998B', // Samsung S21 Ultra
         'CPH2207', // Oppo Reno
         'M2102J20SG', // Poco X3 Pro

@@ -3,6 +3,7 @@ import { prisma } from '../../data/posgres';
 import { JwtAdapter } from '../../config/jwt.adapter';
 import { LoginUserDto } from '../../domain/dtos/auth';
 import { formatErrors } from '../utils/formatErrors';
+import { bcryptAdapter } from '../../config/bcrypt.adapter';
 
 export class AuthController {
   public loginUser = async (req: Request, res: Response) => {
@@ -37,7 +38,12 @@ export class AuthController {
       }
 
       // Verificar contraseña
-      if (loginDto!.password !== user.password) {
+      const isPasswordMatch = await bcryptAdapter.compare(
+        loginDto!.password,
+        user.password
+      );
+
+      if (!isPasswordMatch) {
         return res
           .status(400)
           .json({ status: 'fail', message: 'Credenciales incorrectas' });
