@@ -7,7 +7,8 @@
   "types": "./src/index.ts",
   "exports": {
     "./interfaces/responses": "./src/interfaces/responses/index.ts",
-    "./actions/auth": "./src/actions/auth/index.ts"
+    "./actions/auth": "./src/actions/auth/index.ts",
+    "./config": "./src/config/index.ts"
   },
   "devDependencies": {
     "axios": "^1.19.0"
