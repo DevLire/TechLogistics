@@ -1,4 +1,3 @@
-import type { UserData } from '@/infrastructure/interfaces/responses/get-user.response.ts';
 import { create } from 'zustand';
 
 import { checkAuthAction } from '@/core/actions/auth/check-auth.action';
@@ -6,6 +5,7 @@ import { loginAction } from '@/core/actions/auth/login.action';
 import * as SecureStore from 'expo-secure-store';
 import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
 import { useSecurityStore } from '@/stores/security/use-security-store';
+import type { UserData } from '@techlogistics/shared/interfaces/responses';
 
 type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 

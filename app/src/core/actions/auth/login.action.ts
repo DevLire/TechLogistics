@@ -1,5 +1,5 @@
 import { api } from '@/infrastructure/api/api';
-import type { AuthResponse } from '@/infrastructure/interfaces/responses/auth.response';
+import type { AuthResponse } from '@techlogistics/shared/interfaces/responses';
 
 export const loginAction = async (
   email: string,

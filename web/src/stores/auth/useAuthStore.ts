@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import type { UserData } from '@/infrastructure/interfaces/responses/get-user.response.ts';
 
 import { loginAction } from '@/actions/login.action.ts';
 import { checkAuthAction } from '@/actions/check-auth.action.ts';
+import type { UserData } from '@techlogistics/shared/interfaces/responses';
 
 type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 

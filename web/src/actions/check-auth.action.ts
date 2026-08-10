@@ -1,5 +1,5 @@
 import { api } from '@/api/api.ts';
-import type { AuthResponse } from '../infrastructure/interfaces/responses/auth.response.ts';
+import type { AuthResponse } from '@techlogistics/shared/interfaces/responses';
 
 export const checkAuthAction = async (): Promise<AuthResponse> => {
   const token = localStorage.getItem('token');

@@ -1,4 +1,4 @@
-import type { ErrorsDetails } from '@/infrastructure/interfaces/error-details.interfaces.ts';
+import type { ErrorsDetails } from '@techlogistics/shared/interfaces/responses';
 
 export interface GetUsersResponse {
   status: string;
