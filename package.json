@@ -1,0 +1,9 @@
+{
+  "name": "techlogistics",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --dir web dev",
+    "dev:app": "pnpm --dir app start",
+    "dev:backend": "pnpm --dir backend dev"
+  }
+}

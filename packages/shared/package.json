@@ -1,0 +1,11 @@
+{
+  "name": "@techlogistics/shared",
+  "version": "1.0.0",
+  "private": true,
+  "author": "DevLire",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    "./interfaces/responses": "./src/interfaces/responses/index.ts"
+  }
+}
