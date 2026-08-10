@@ -3,15 +3,35 @@
   "version": "1.0.0",
   "private": true,
   "author": "DevLire",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "types": "./src/index.ts",
   "exports": {
-    "./interfaces/responses": "./src/interfaces/responses/index.ts",
-    "./actions/auth": "./src/actions/auth/index.ts",
-    "./config": "./src/config/index.ts",
-    "./realtime/security": "./src/realtime/security/index.ts"
+    "./interfaces/responses": {
+      "types": "./src/interfaces/responses/index.ts",
+      "import": "./src/interfaces/responses/index.ts",
+      "require": "./dist/interfaces/responses/index.js"
+    },
+    "./actions/auth": {
+      "types": "./src/actions/auth/index.ts",
+      "import": "./src/actions/auth/index.ts",
+      "require": "./dist/actions/auth/index.js"
+    },
+    "./config": {
+      "types": "./src/config/index.ts",
+      "import": "./src/config/index.ts",
+      "require": "./dist/config/index.js"
+    },
+    "./realtime/security": {
+      "types": "./src/realtime/security/index.ts",
+      "import": "./src/realtime/security/index.ts",
+      "require": "./dist/realtime/security/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc"
   },
   "devDependencies": {
-    "axios": "^1.19.0"
+    "axios": "^1.19.0",
+    "typescript": "^6.0.3"
   }
 }
