@@ -3,6 +3,7 @@ import { Server as SocketIOServer } from 'socket.io';
 
 import { SocketAuthMiddleware } from '../middleware/socket-auth.middleware';
 import { AuthenticatedSocket } from '../types/authenticated-socket';
+import { SecuritySocketEventPayloads } from '@techlogistics/shared/realtime/security';
 
 export class RealtimeServer {
   private readonly io: SocketIOServer;
@@ -51,7 +52,11 @@ export class RealtimeServer {
     });
   }
 
-  public emitToUser(userId: number, event: string, payload: unknown): void {
+  public emitToUser<K extends keyof SecuritySocketEventPayloads>(
+    userId: number,
+    event: K,
+    payload: SecuritySocketEventPayloads[K]
+  ): void {
     this.io.to(this.getUserRoom(userId)).emit(event, payload);
   }
 

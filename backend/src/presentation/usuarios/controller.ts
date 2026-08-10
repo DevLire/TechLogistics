@@ -8,8 +8,8 @@ import {
 } from '../../domain/dtos/usuarios';
 import { formatErrors } from '../utils/formatErrors';
 import { RealtimeServer } from '../../infrastructure/realtime/core/realtime.server';
-import { SocketEvents } from '../../infrastructure/realtime/events/socket-event';
 import { bcryptAdapter } from '../../config/bcrypt.adapter';
+import { SecuritySocketEvents } from '@techlogistics/shared/realtime/security';
 
 export class UsuarioController {
   constructor() {}
@@ -274,7 +274,7 @@ export class UsuarioController {
       if (registrationPermissionChanged) {
         RealtimeServer.getInstance().emitToUser(
           updatedUser.id_usuario,
-          SocketEvents.RegistrationPermissionUpdated,
+          SecuritySocketEvents.RegistrationPermissionUpdated,
           {
             canRegisterDevice: updatedUser.puede_registrar_dispositivo,
           }
@@ -290,7 +290,7 @@ export class UsuarioController {
       if (passwordFallbackPermissionChanged) {
         RealtimeServer.getInstance().emitToUser(
           updatedUser.id_usuario,
-          SocketEvents.PasswordFallbackPermissionUpdated,
+          SecuritySocketEvents.PasswordFallbackPermissionUpdated,
           {
             allowPasswordFallback: updatedUser.permite_fallback_password,
           }
@@ -357,10 +357,8 @@ export class UsuarioController {
 
       RealtimeServer.getInstance().emitToUser(
         deletedUser.id_usuario,
-        SocketEvents.UserDisabled,
-        {
-          reason: 'USER_DISABLED',
-        }
+        SecuritySocketEvents.UserDisabled,
+        {}
       );
 
       return res.json({
