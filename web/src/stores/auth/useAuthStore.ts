@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 
-import { loginAction } from '@/actions/login.action.ts';
 import { checkAuthAction } from '@/actions/check-auth.action.ts';
 import type { UserData } from '@techlogistics/shared/interfaces/responses';
+import { api } from '@/api/api.ts';
+import { loginAction } from '@techlogistics/shared/actions/auth';
 
 type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 
@@ -27,7 +28,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
   // Actions
   login: async (email: string, password: string) => {
     try {
-      const data = await loginAction(email, password);
+      const data = await loginAction(api, email, password);
       localStorage.setItem('token', data.token);
       localStorage.setItem('rol', data.user.rol);
 
