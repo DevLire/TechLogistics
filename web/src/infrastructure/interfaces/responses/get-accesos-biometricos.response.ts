@@ -1,52 +1,54 @@
+import type { ErrorsDetails } from '@techlogistics/shared/interfaces/responses';
+
 export interface GetAccesosBiometricosResponse {
-    status:     string;
-    message:    string;
-    data:       Datum[];
-    errors:     any[];
-    pagination: Pagination;
+  status: string;
+  message: string;
+  data: Datum[];
+  errors: ErrorsDetails[];
+  pagination: Pagination;
 }
 
 export interface Datum {
-    id_acceso_biometrico:   number;
-    fecha_hora:             Date;
-    estado:                 Estado;
-    metodo_acceso:          MetodoAcceso;
-    dispositivo_autorizado: DispositivoAutorizado;
-    usuario:                Usuario;
+  id_acceso_biometrico: number;
+  fecha_hora: Date;
+  estado: Estado;
+  metodo_acceso: MetodoAcceso;
+  dispositivo_autorizado: DispositivoAutorizado;
+  usuario: Usuario;
 }
 
 export interface DispositivoAutorizado {
-    id_dispositivo_autorizado: number;
-    nombre_dispositivo:        string;
-    dispositivo_id:            string;
+  id_dispositivo_autorizado: number;
+  nombre_dispositivo: string;
+  dispositivo_id: string;
 }
 
 type Estado = {
-    Denegado: "DENEGADO",
-    Permitido: "PERMITIDO",
-}
+  Denegado: 'DENEGADO';
+  Permitido: 'PERMITIDO';
+};
 
 type MetodoAcceso = {
-    Huella: "HUELLA",
-    Password: "PASSWORD",
-}
+  Huella: 'HUELLA';
+  Password: 'PASSWORD';
+};
 
 interface Usuario {
-    id_usuario: number;
-    nombre:     string;
-    rol:        Rol;
+  id_usuario: number;
+  nombre: string;
+  rol: Rol;
 }
 
 type Rol = {
-    Administrador: "ADMINISTRADOR",
-    Operario: "OPERARIO",
-    Supervisor: "SUPERVISOR",
-}
+  Administrador: 'ADMINISTRADOR';
+  Operario: 'OPERARIO';
+  Supervisor: 'SUPERVISOR';
+};
 
 interface Pagination {
-    page:  number;
-    limit: number;
-    total: number;
-    next:  string;
-    prev:  string;
+  page: number;
+  limit: number;
+  total: number;
+  next: string;
+  prev: string;
 }

@@ -1,4 +1,4 @@
-import { regularExps } from '../../../config/regular-exp';
+import { regularExps } from '@techlogistics/shared/config';
 
 export class CreateUserDto {
   private constructor(

@@ -1,11 +1,13 @@
-import type { UserData } from '@/infrastructure/interfaces/responses/get-user.response.ts';
 import { create } from 'zustand';
-
-import { checkAuthAction } from '@/core/actions/auth/check-auth.action';
-import { loginAction } from '@/core/actions/auth/login.action';
 import * as SecureStore from 'expo-secure-store';
-import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
+
+import { api } from '@/infrastructure/api/api';
 import { useSecurityStore } from '@/stores/security/use-security-store';
+import { getUniqueDeviceId } from '@/infrastructure/security/deviceSecurity';
+import { checkAuthAction } from '@/core/actions/auth/check-auth.action';
+import { loginAction } from '@techlogistics/shared/actions/auth';
+
+import type { UserData } from '@techlogistics/shared/interfaces/responses';
 
 type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 
@@ -36,7 +38,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   login: async (email: string, password: string) => {
     try {
       const deviceId = await getUniqueDeviceId();
-      const data = await loginAction(email, password, deviceId);
+      const data = await loginAction(api, email, password, deviceId);
       await SecureStore.setItemAsync('token', data.token);
 
       if (data.security) {
@@ -110,7 +112,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         return { ok: false, message: 'Usuario no encontrado en sesión' };
 
       const deviceId = await getUniqueDeviceId();
-      const data = await loginAction(email, password, deviceId);
+      const data = await loginAction(api, email, password, deviceId);
 
       await SecureStore.setItemAsync('token', data.token);
       set({ token: data.token });

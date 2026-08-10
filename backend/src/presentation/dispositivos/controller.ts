@@ -9,7 +9,7 @@ import {
 } from '../../domain/dtos/dispositivos';
 import { formatErrors } from '../utils/formatErrors';
 import { RealtimeServer } from '../../infrastructure/realtime/core/realtime.server';
-import { SocketEvents } from '../../infrastructure/realtime/events/socket-event';
+import { SecuritySocketEvents } from '@techlogistics/shared/realtime/security';
 
 export class DispositivoController {
   constructor() {}
@@ -329,7 +329,7 @@ export class DispositivoController {
 
       RealtimeServer.getInstance().emitToUser(
         usuario.id_usuario,
-        SocketEvents.RegistrationPermissionUpdated,
+        SecuritySocketEvents.RegistrationPermissionUpdated,
         {
           canRegisterDevice: false,
         }
@@ -481,7 +481,7 @@ export class DispositivoController {
 
       RealtimeServer.getInstance().emitToDevice(
         dispositivoExists.dispositivo_id,
-        SocketEvents.DeviceRevoked,
+        SecuritySocketEvents.DeviceRevoked,
         {}
       );
 

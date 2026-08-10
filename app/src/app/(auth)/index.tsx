@@ -15,7 +15,7 @@ import { ThemedButton } from '@/presentation/components/theme/ThemedButton';
 import { TechLogisticsImagotipo } from '@/presentation/components/TechLogisticsImagotipo';
 import { useAuthStore } from '@/stores/auth/use-auth-store';
 import { useColorScheme } from '@/presentation/hooks/use-color-scheme';
-import { regularExps } from '@/config/regular-exp';
+import { regularExps } from '@techlogistics/shared/config';
 import { AppFooter } from '@/presentation/components/AppFooter';
 
 const bgLight = require('@/assets/loginLightBg.png');

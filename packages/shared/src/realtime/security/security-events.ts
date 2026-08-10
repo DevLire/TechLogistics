@@ -1,4 +1,4 @@
-export const SocketEvents = {
+export const SecuritySocketEvents = {
   RegistrationPermissionUpdated: 'security:registration-permission-updated',
 
   UserDisabled: 'security:user-disabled',

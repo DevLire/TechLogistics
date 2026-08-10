@@ -1,0 +1,1 @@
+export {regularExps} from './regular-exp'

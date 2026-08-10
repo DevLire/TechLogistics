@@ -1,5 +1,5 @@
-import type { ErrorsDetails } from '@/infrastructure/interfaces/error-details.interfaces';
-import type { UserData } from './get-user.response.ts';
+import type {UserData} from "./get-user-response";
+import type {ErrorsDetails} from "./error-details";
 
 export interface AuthResponse {
   status:   string;

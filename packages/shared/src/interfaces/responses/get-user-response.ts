@@ -1,4 +1,4 @@
-import type { ErrorsDetails } from '@/infrastructure/interfaces/error-details.interfaces';
+import type { ErrorsDetails } from './error-details';
 
 export interface GetUserResponse {
   status: string;
@@ -10,7 +10,7 @@ export interface GetUserResponse {
 export interface UserData {
   id_usuario:                  number;
   nombre:                      string;
-  rol:                         string;
+  rol:                         Role;
   email:                       string;
   activo:                      boolean;
   puede_registrar_dispositivo: boolean;
@@ -26,3 +26,5 @@ export interface Dispositivo {
   fecha_registro:            Date;
   activo:                    boolean;
 }
+
+type Role = 'ADMINISTRADOR' | 'OPERARIO' | 'SUPERVISOR';
