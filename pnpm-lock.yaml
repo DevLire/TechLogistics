@@ -301,7 +301,11 @@ importers:
         specifier: ^8.59.4
         version: 8.66.0(eslint@10.8.1(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
 
-  packages/shared: {}
+  packages/shared:
+    devDependencies:
+      axios:
+        specifier: ^1.19.0
+        version: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
 
   web:
     dependencies:
