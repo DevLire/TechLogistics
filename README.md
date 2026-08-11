@@ -1,62 +1,263 @@
-# Techlogistics - Ecosistema de Gestión Logística y Biometría
+# TechLogistics - Ecosistema de Gestión Logística y Biometría
 
 Plataforma **full-stack** diseñada para la gestión de inventarios y el control seguro de accesos a instalaciones mediante **hardware binding** y autenticación biométrica nativa.
+
+El proyecto está organizado como un **monorepo administrado con pnpm**, que centraliza el backend, panel administrativo, aplicación móvil y paquetes de código compartido.
 
 ---
 
 # Estructura del Monorepo
 
-Este proyecto está gestionado como un **monorepo**.
-
 ```text
 .
-├── backend/   # API REST (Node.js, Prisma, PostgreSQL)
-├── app/       # Aplicación móvil (Expo, React Native)
-└── web/       # Panel administrativo (React, Vite)
+├── app/                  # Aplicación móvil (Expo, React Native)
+├── backend/              # API REST (Node.js, Prisma, PostgreSQL)
+├── web/                  # Panel administrativo (React, Vite)
+├── packages/
+│   └── shared/           # Código compartido entre proyectos
+├── package.json          # Scripts y configuración del workspace
+├── pnpm-workspace.yaml   # Configuración del monorepo
+└── pnpm-lock.yaml        # Lockfile global del workspace
 ```
 
 ## Proyectos
 
-- **[backend/](./backend)**  
-  API RESTful estructurada en capas (Dominio, Aplicación, Infraestructura y Presentación), responsable de la lógica de negocio, autenticación, autorización y persistencia.
+### [Backend](./backend)
 
-- **[app/](./app)**  
-  Aplicación móvil nativa enfocada en la autenticación biométrica, almacenamiento seguro y validación por hardware de los operarios.
+API RESTful estructurada en capas de **Dominio, Aplicación, Infraestructura y Presentación**.
 
-- **[web/](./web)**  
-  Dashboard administrativo y terminal POS para la gestión remota de dispositivos, control RBAC y supervisión analítica.
+Es responsable de:
+
+* Lógica de negocio.
+* Autenticación y autorización.
+* Control de acceso basado en roles.
+* Persistencia de datos mediante Prisma y PostgreSQL.
+* Comunicación en tiempo real mediante Socket.IO.
+* Gestión y vinculación de dispositivos.
+* Auditoría de operaciones relevantes.
+
+Consulta la [guía de configuración del Backend](./backend/README.md).
+
+### [App Móvil](./app)
+
+Aplicación móvil desarrollada con **Expo y React Native**, orientada a la autenticación biométrica, almacenamiento seguro y validación por hardware de los operarios.
+
+Incluye:
+
+* Autenticación biométrica nativa.
+* Hardware binding de dispositivos.
+* Almacenamiento seguro de credenciales.
+* Control de sesiones.
+* Comunicación en tiempo real mediante Socket.IO.
+* Funcionalidades orientadas al control de asistencia y accesos.
+
+Consulta la [guía de configuración de la App Móvil](./app/README.md).
+
+### [Panel Web](./web)
+
+Dashboard administrativo desarrollado con **React y Vite**.
+
+Permite:
+
+* Gestión de usuarios y roles.
+* Gestión de dispositivos.
+* Control de permisos.
+* Administración de inventarios.
+* Supervisión de operaciones.
+
+Consulta la [guía de configuración del Panel Web](./web/README.md).
+
+### [Shared](./packages/shared)
+
+Paquete interno del workspace que contiene código reutilizable entre los diferentes proyectos del monorepo.
+
+Se utiliza principalmente para mantener contratos y lógica compartida sin duplicación entre aplicaciones.
 
 ---
 
 # Arquitectura y Características Core
 
-- **Control de Acceso basado en Roles (RBAC):** Jerarquía de tres niveles (Administrador, Supervisor y Operario) protegida mediante middlewares en el backend y *Route Guards* síncronos en el frontend.
+## Control de Acceso basado en Roles
 
-- **Hardware Binding + Biometría:** Middleware restrictivo (`DeviceChecker`) y autenticación biométrica nativa (huella dactilar o reconocimiento facial) vinculada al hardware seguro del dispositivo.
+El sistema implementa **RBAC (Role-Based Access Control)** con tres niveles principales:
 
-- **Estrategia de Auditoría:** Registro exhaustivo de accesos en la base de datos, discriminando el método de autenticación utilizado (biometría o contraseña).
+* **Administrador**
+* **Supervisor**
+* **Operario**
 
-- **Persistencia de Datos:** Estrategia de **Soft Delete** sobre PostgreSQL para desvincular hardware sin romper restricciones `UNIQUE` ni comprometer la integridad histórica del inventario.
+La autorización se aplica en el backend mediante middlewares y en los clientes mediante mecanismos de protección de rutas y permisos.
+
+## Hardware Binding + Biometría
+
+Los dispositivos móviles pueden vincularse de forma segura a un usuario.
+
+El sistema combina:
+
+* Identificación única del dispositivo.
+* Almacenamiento seguro de credenciales.
+* Autenticación biométrica nativa.
+* Validación de dispositivo desde el backend.
+
+Esto permite restringir el acceso a usuarios y dispositivos autorizados.
+
+## Comunicación en Tiempo Real
+
+El sistema utiliza **Socket.IO** para propagar eventos importantes entre backend y clientes.
+
+Entre otros casos:
+
+* Cambios en permisos de registro de dispositivos.
+* Deshabilitación de usuarios.
+* Cambios que requieren una reacción inmediata de los dispositivos conectados.
+
+La arquitectura utiliza conexiones autenticadas y rooms asociadas a usuarios y dispositivos.
+
+## Auditoría
+
+Las operaciones relevantes del sistema quedan registradas para mantener trazabilidad sobre los accesos y acciones realizadas.
+
+La auditoría permite identificar, entre otros datos, el método de autenticación utilizado.
+
+## Persistencia
+
+El backend utiliza **PostgreSQL** como base de datos y **Prisma ORM** como capa de acceso.
+
+Se utiliza **Soft Delete** en determinadas entidades para preservar la integridad histórica de los registros y evitar conflictos con restricciones `UNIQUE`.
+
+---
+
+# Requisitos
+
+Para trabajar con el monorepo se requiere:
+
+* **Node.js**
+* **pnpm**
+* **PostgreSQL**
+
+Para el desarrollo de la aplicación móvil:
+
+* **Expo**
+* **Android Studio** para desarrollo y emulación Android
 
 ---
 
 # Instalación
 
-## ¿Cómo levantar cada servicio?
+Clona el repositorio y entra en su directorio raíz.
 
-Cada proyecto dispone de su propio **README.md** con instrucciones específicas para su configuración y ejecución.
+Desde la raíz del monorepo instala todas las dependencias:
 
-- **[Guía de inicio del Backend](./backend/README.md)**  
-  Configuración de variables de entorno, Docker, PostgreSQL, Prisma y ejecución del servidor.
+```bash
+pnpm install
+```
 
-- **[Guía de inicio de la App Móvil](./app/README.md)**  
-  Configuración del entorno, Expo y ejecución del bundler.
+Esto instala las dependencias de los proyectos y paquetes incluidos en el workspace.
 
-- **[Guía de inicio del Panel Web](./web/README.md)**  
-  Variables de entorno, instalación de dependencias y servidor de desarrollo con Vite.
+> Las configuraciones específicas de cada proyecto, como variables de entorno, base de datos o configuración de Expo, se encuentran en sus respectivos README.
 
 ---
 
-# Licencia
+# Desarrollo
 
-Proyecto desarrollado con fines académicos y de investigación para la gestión logística segura mediante autenticación biométrica y control de dispositivos.
+Los principales servicios pueden ejecutarse desde la raíz mediante los scripts del workspace.
+
+## Backend
+
+```bash
+pnpm dev:backend
+```
+
+## Panel Web
+
+```bash
+pnpm dev:web
+```
+
+## Aplicación Móvil
+
+```bash
+pnpm dev:app
+```
+
+Para conocer los requisitos específicos de cada servicio:
+
+* [Backend](./backend/README.md)
+* [App Móvil](./app/README.md)
+* [Panel Web](./web/README.md)
+
+---
+
+# Build
+
+## Backend
+
+El build del backend también construye primero el paquete compartido:
+
+```bash
+pnpm build:backend
+```
+
+Internamente se ejecutan los procesos necesarios para generar el código compartido, generar el cliente de Prisma y compilar el backend.
+
+## Panel Web
+
+```bash
+pnpm build:web
+```
+
+---
+
+# Producción
+
+## Backend
+
+Para iniciar el backend compilado:
+
+```bash
+pnpm start:backend
+```
+
+El proceso utiliza el código generado en `backend/dist`.
+
+Las migraciones de Prisma se gestionan durante el proceso de build del backend.
+
+---
+
+# Scripts principales
+
+| Comando              | Descripción                            |
+| -------------------- | -------------------------------------- |
+| `pnpm install`       | Instala las dependencias del workspace |
+| `pnpm dev:backend`   | Inicia el backend en desarrollo        |
+| `pnpm dev:web`       | Inicia el panel web en desarrollo      |
+| `pnpm dev:app`       | Inicia la aplicación móvil             |
+| `pnpm build:backend` | Construye shared y backend             |
+| `pnpm build:web`     | Construye el panel web                 |
+| `pnpm start:backend` | Inicia el backend compilado            |
+| `pnpm preview:web`   | Previsualiza el build del panel web    |
+
+---
+
+# Despliegue
+
+El repositorio está preparado para desplegar sus diferentes aplicaciones de forma independiente.
+
+El **backend** puede desplegarse como un servicio Node.js utilizando los scripts del workspace:
+
+```bash
+pnpm build:backend
+```
+
+```bash
+pnpm start:backend
+```
+
+El **panel web** puede desplegarse como una aplicación utilizando:
+
+```bash
+pnpm build:web
+```
+
+La configuración específica de cada plataforma de despliegue y las variables de entorno deben mantenerse en la configuración correspondiente del servicio.
+
+---
