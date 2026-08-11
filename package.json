@@ -4,6 +4,10 @@
   "scripts": {
     "dev:web": "pnpm --dir web dev",
     "dev:app": "pnpm --dir app start",
-    "dev:backend": "pnpm --dir backend dev"
+    "dev:backend": "pnpm --dir backend dev",
+    "build:web": "pnpm --dir web build",
+    "build:backend": "pnpm --dir packages/shared build && pnpm --dir backend build",
+    "start:backend": "pnpm --dir backend start",
+    "preview:web": "pnpm --dir web preview"
   }
 }
