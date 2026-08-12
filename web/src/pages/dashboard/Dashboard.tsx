@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { MetricaCard } from '../../components/MetricaCard.tsx';
 import AlertaRow from './components/AlertaRow';
 
-// Importación de las acciones del backend
 import { getAlertasStock, getProductos } from '@/actions/productos.action.ts';
 import { getMovimientosIngresosAction } from '@/actions/movimientos-ingresos.action.ts';
 import {
@@ -22,6 +21,16 @@ import {
   transformarDatosAccesos,
   type DataGraficoAcceso,
 } from '@/infrastructure/adapters/accesos-biometricos.adapter.ts';
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
 export default function Dashboard() {
   // 1. Carga de Alertas (Para Tabla Izquierda y Gráfico de Líneas)
@@ -59,14 +68,14 @@ export default function Dashboard() {
     select: (response) => response.data || [],
   });
 
-  // ONFIGURACIÓN DE GRÁFICOS
+  // CONFIGURACIÓN DE GRÁFICOS
   const configBarras: ConfigBarra<DataGraficoAcceso>[] = [
     { dataKey: 'Permitidos', fill: '#10b981', name: 'Accesos Permitidos' },
     { dataKey: 'Denegados', fill: '#ef4444', name: 'Accesos Denegados' },
   ];
 
   const configLineas: ConfigLinea<any>[] = [
-    { dataKey: 'stock_actual', stroke: '#3b82f6', name: 'Stock Actual' }, // Azul
+    { dataKey: 'stock_actual', stroke: '#3b82f6', name: 'Stock Actual' },
     {
       dataKey: 'stock_minimo',
       stroke: '#f59e0b',
@@ -79,7 +88,6 @@ export default function Dashboard() {
   const ingresos = dataIngresos?.data || [];
   const totalProductos = productosResponse?.pagination?.total || 0;
 
-  // Calculamos el total de accesos sumando permitidos y denegados del adaptador
   const totalAccesosHistoricos = accesosBiometricos.reduce(
     (acc, curr) => acc + curr.Permitidos + curr.Denegados,
     0
@@ -113,7 +121,6 @@ export default function Dashboard() {
 
       {/* ZONA DE GRÁFICOS (2 Columnas) */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Gráfico 1: Barras (Auditoría IoT) */}
         {loadingAccesosBiometricos ? (
           <GraficoBarras.Skeleton titulo="Auditoría de Accesos Biométricos (IoT)" />
         ) : (
@@ -125,7 +132,6 @@ export default function Dashboard() {
           />
         )}
 
-        {/* Gráfico 2: Líneas (Machine Learning / Stock) */}
         {loadingAlertas ? (
           <GraficoLineas.Skeleton titulo="Proyección de Agotamiento de Inventario" />
         ) : (
@@ -146,9 +152,12 @@ export default function Dashboard() {
             <h2 className="text-lg font-semibold text-white">
               Alertas de Stock Crítico
             </h2>
-            <span className="animate-pulse rounded-lg border border-red-800/40 bg-red-900/30 px-2.5 py-0.5 text-xs font-bold text-red-400">
+            <Badge
+              className="animate-pulse border-red-800/40 bg-red-900/30 px-2.5 py-0.5 text-xs font-bold text-red-400"
+              variant="outline"
+            >
               {alertas.length} CRÍTICAS
-            </span>
+            </Badge>
           </div>
 
           {alertas.length === 0 ? (
@@ -159,27 +168,27 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="overflow-hidden rounded-xl border border-white/10 bg-[#121212] shadow-xl">
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-white/10 bg-white/5 text-gray-400">
-                    <th className="px-4 py-3 text-left text-[11px] font-medium tracking-wider uppercase">
+              <Table>
+                <TableHeader className="border-b border-white/10 bg-white/5">
+                  <TableRow className="border-none text-gray-400 hover:bg-transparent">
+                    <TableHead className="px-4 py-3 text-left text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Producto
-                    </th>
-                    <th className="px-4 py-3 text-center text-[11px] font-medium tracking-wider uppercase">
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-center text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Stock
-                    </th>
-                    <th className="px-4 py-3 text-center text-[11px] font-medium tracking-wider uppercase">
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-center text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Mínimo
-                    </th>
-                    <th className="px-4 py-3 text-left text-[11px] font-medium tracking-wider uppercase">
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-left text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Proveedor
-                    </th>
-                    <th className="px-4 py-3 text-left text-[11px] font-medium tracking-wider uppercase">
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-left text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Acción
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="border-0">
                   {alertas.map((a, i: number) => (
                     <AlertaRow
                       key={a.id_producto}
@@ -187,8 +196,8 @@ export default function Dashboard() {
                       isLast={i === alertas.length - 1}
                     />
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           )}
         </div>
@@ -211,53 +220,56 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="overflow-hidden rounded-xl border border-white/10 bg-[#121212] shadow-xl">
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-white/10 bg-white/5 text-gray-400">
-                    <th className="px-4 py-3 text-left text-[11px] font-medium tracking-wider uppercase">
+              <Table>
+                <TableHeader className="border-b border-white/10 bg-white/5">
+                  <TableRow className="border-none text-gray-400 hover:bg-transparent">
+                    <TableHead className="px-4 py-3 text-left text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Fecha / Hora
-                    </th>
-                    <th className="px-4 py-3 text-left text-[11px] font-medium tracking-wider uppercase">
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-left text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Operario
-                    </th>
-                    <th className="px-4 py-3 text-left text-[11px] font-medium tracking-wider uppercase">
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-left text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Dispositivo
-                    </th>
-                    <th className="px-4 py-3 text-center text-[11px] font-medium tracking-wider uppercase">
+                    </TableHead>
+                    <TableHead className="px-4 py-3 text-center text-[11px] font-medium tracking-wider whitespace-nowrap uppercase">
                       Estado
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="border-0">
                   {anomalias.slice(0, 8).map((anomalia) => (
-                    <tr
+                    <TableRow
                       key={anomalia.id_acceso_biometrico}
-                      className="transition-colors hover:bg-white/[0.02]"
+                      className="border-b border-white/5 transition-colors hover:bg-white/[0.02]"
                     >
-                      <td className="px-4 py-3 text-gray-300">
+                      <TableCell className="px-4 py-3 whitespace-nowrap text-gray-300">
                         {new Date(anomalia.fecha_hora).toLocaleString('es-PE', {
                           day: '2-digit',
                           month: 'short',
                           hour: '2-digit',
                           minute: '2-digit',
                         })}
-                      </td>
-                      <td className="px-4 py-3 text-gray-300">
+                      </TableCell>
+                      <TableCell className="px-4 py-3 whitespace-nowrap text-gray-300">
                         {anomalia.usuario?.nombre || 'Desconocido'}
-                      </td>
-                      <td className="px-4 py-3 text-xs text-gray-400">
+                      </TableCell>
+                      <TableCell className="px-4 py-3 text-xs whitespace-nowrap text-gray-400">
                         {anomalia.dispositivo_autorizado?.nombre_dispositivo ||
                           'Dispositivo no registrado'}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="rounded border border-red-800/50 bg-red-900/30 px-2 py-1 text-[10px] font-bold tracking-wider text-red-400">
+                      </TableCell>
+                      <TableCell className="px-4 py-3 text-center">
+                        <Badge
+                          className="border-red-800/50 bg-red-900/30 px-2 py-1 text-[10px] font-bold tracking-wider text-red-400 uppercase"
+                          variant="outline"
+                        >
                           {anomalia.estado}
-                        </span>
-                      </td>
-                    </tr>
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           )}
         </div>
