@@ -29,13 +29,13 @@ export class Server {
   async start() {
     //* Middlewares
 
-    const allowedOrigin = process.env.ALLOWED_ORIGIN;
+    const allowedOrigins = (process.env.ALLOWED_ORIGIN ?? '')
+      .split(',')
+      .map((origin) => origin.trim());
     this.app.use(
       cors({
         origin: (origin, callback) => {
-          if (!origin) return callback(null, true);
-
-          if (origin === allowedOrigin) {
+          if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
           }
 
@@ -56,7 +56,7 @@ export class Server {
 
     this.realtimeServer.initialize();
 
-    this.httpServer.listen(this.port, () => {
+    this.httpServer.listen(this.port, '0.0.0.0', () => {
       console.log(`Server running on port ${this.port}`);
     });
   }
