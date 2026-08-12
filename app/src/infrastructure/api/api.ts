@@ -5,8 +5,12 @@ import { Platform } from 'react-native';
 
 const API_URL =
   Platform.OS === 'android' && !Device.isDevice
-    ? 'http://10.0.2.2:3000/api'
-    : 'http://192.168.1.253:3000/api';
+    ? process.env.EXPO_PUBLIC_API_EMULATOR_URL
+    : process.env.EXPO_PUBLIC_API_DEVICE_URL;
+
+if (!API_URL) {
+  throw new Error('API URL is not defined');
+}
 
 const api = axios.create({
   baseURL: API_URL,

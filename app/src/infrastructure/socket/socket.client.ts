@@ -5,9 +5,12 @@ import { Platform } from 'react-native';
 
 const SOCKET_URL =
   Platform.OS === 'android' && !Device.isDevice
-    ? 'http://10.0.2.2:3000'
-    : 'http://192.168.1.253:3000';
+    ? process.env.EXPO_PUBLIC_SOCKET_EMULATOR_URL
+    : process.env.EXPO_PUBLIC_SOCKET_DEVICE_URL;
 
+if (!SOCKET_URL) {
+  throw new Error('Socket URL is not defined');
+}
 interface CreateSocketOptions {
   token: string;
   deviceId: string;
