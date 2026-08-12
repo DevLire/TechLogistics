@@ -1,8 +1,19 @@
 import type { ReactNode } from 'react';
+import { Loader2 } from 'lucide-react';
 import {
   SegmentedControl,
   type SegmentedControlOption,
 } from './SegmentedControl';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 export interface Column<T> {
   header: string;
@@ -62,20 +73,22 @@ export function DataTable<T, S extends string | number>({
     <div className="flex flex-col gap-6">
       {/* Search and SegmentedControl Header */}
       {(search || segmentedControl) && (
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           {search ? (
-            <div className="relative w-full sm:w-auto">
-              <input
-                className="w-full rounded-lg border border-white/10 bg-[#1a1a1a] px-4 py-2.5 text-sm text-gray-200 transition-all outline-none focus:border-[#2ecc71] focus:ring-2 focus:ring-[#2ecc71]/20 sm:w-[300px]"
+            <div className="relative flex w-full flex-col gap-2 md:w-auto">
+              <Input
+                className="w-full border-white/10 bg-[#1a1a1a] px-4 py-5 text-sm text-gray-200 transition-all focus-visible:border-[#2ecc71] focus-visible:ring-2 focus-visible:ring-[#2ecc71]/20 md:w-[300px] md:py-2.5"
                 placeholder={search.placeholder || 'Buscar...'}
-                type="text"
                 value={search.value}
                 onChange={(e) => search.onChange(e.target.value)}
               />
               {search.isFetching && (
-                <span className="absolute top-3 left-[315px] animate-pulse text-xs text-gray-400 max-sm:hidden">
-                  Buscando...
-                </span>
+                <div className="absolute top-[14px] right-3 flex items-center gap-1.5 md:top-2.5 md:-right-24">
+                  <Loader2 className="h-4 w-4 animate-spin text-gray-400 md:h-3 md:w-3" />
+                  <span className="hidden text-xs text-gray-400 md:inline-block">
+                    Buscando...
+                  </span>
+                </div>
               )}
             </div>
           ) : (
@@ -83,73 +96,77 @@ export function DataTable<T, S extends string | number>({
           )}
 
           {segmentedControl && (
-            <SegmentedControl
-              options={segmentedControl.options}
-              selectedValue={segmentedControl.selectedValue}
-              onChange={segmentedControl.onChange}
-            />
+            <div className="w-full overflow-x-auto md:w-auto">
+              <SegmentedControl
+                options={segmentedControl.options}
+                selectedValue={segmentedControl.selectedValue}
+                onChange={segmentedControl.onChange}
+              />
+            </div>
           )}
         </div>
       )}
 
       {/* Table Container */}
       <div
-        className={`overflow-hidden rounded-xl border border-white/10 bg-[#121212] shadow-xl transition-opacity duration-200 ${
+        className={`flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#121212] shadow-xl transition-opacity duration-200 ${
           isFetching ? 'opacity-60' : 'opacity-100'
         }`}
       >
         {isLoading && data.length === 0 ? (
-          <div className="p-8 text-center text-gray-400">{loadingMessage}</div>
-        ) : data.length === 0 ? (
-          <div className="p-8 text-center text-gray-400">{emptyMessage}</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-white/10 bg-white/5">
-                  {columns.map((col, idx) => (
-                    <th
-                      key={idx}
-                      className="px-3 py-4 text-center text-[11px] font-medium tracking-wider whitespace-nowrap text-gray-400 uppercase"
-                    >
-                      {col.header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {data.map((row, idx) => {
-                  const isLast = idx === data.length - 1;
-                  return (
-                    <tr
-                      key={keyExtractor(row)}
-                      className={`${
-                        isLast ? 'border-none' : 'border-b border-white/5'
-                      } transition-colors hover:bg-white/[0.02]`}
-                    >
-                      {columns.map((col, colIdx) => (
-                        <td
-                          key={colIdx}
-                          className="p-4 text-center font-medium text-gray-200"
-                        >
-                          {col.render
-                            ? col.render(row)
-                            : col.accessor
-                              ? String(row[col.accessor])
-                              : null}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="p-8 text-center text-sm text-gray-400">
+            {loadingMessage}
           </div>
+        ) : data.length === 0 ? (
+          <div className="p-8 text-center text-sm text-gray-400">
+            {emptyMessage}
+          </div>
+        ) : (
+          <Table>
+            <TableHeader className="border-b border-white/10 bg-white/5">
+              <TableRow className="border-none hover:bg-transparent">
+                {columns.map((col, idx) => (
+                  <TableHead
+                    key={idx}
+                    className="h-12 px-4 text-center text-[11px] font-medium tracking-wider whitespace-nowrap text-gray-400 uppercase"
+                  >
+                    {col.header}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody className="border-0">
+              {data.map((row, idx) => {
+                const isLast = idx === data.length - 1;
+                return (
+                  <TableRow
+                    key={keyExtractor(row)}
+                    className={`${
+                      isLast ? 'border-none' : 'border-b border-white/5'
+                    } transition-colors hover:bg-white/[0.02]`}
+                  >
+                    {columns.map((col, colIdx) => (
+                      <TableCell
+                        key={colIdx}
+                        className="p-4 text-center font-medium whitespace-nowrap text-gray-200"
+                      >
+                        {col.render
+                          ? col.render(row)
+                          : col.accessor
+                            ? String(row[col.accessor])
+                            : null}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         )}
 
         {/* Pagination Footer */}
         {pagination && data.length > 0 && (
-          <div className="flex items-center justify-between border-t border-white/10 bg-white/5 px-6 py-4">
+          <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 bg-white/5 px-6 py-4 sm:flex-row">
             <span className="text-xs text-gray-400">
               Mostrando página{' '}
               <span className="font-medium text-white">{pagination.page}</span>{' '}
@@ -159,21 +176,23 @@ export function DataTable<T, S extends string | number>({
               </span>
             </span>
 
-            <div className="flex gap-2">
-              <button
-                className="cursor-pointer rounded-md border border-white/10 bg-[#1a1a1a] px-4 py-2 text-xs font-semibold text-gray-300 transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-30"
+            <div className="flex w-full gap-2 sm:w-auto">
+              <Button
+                className="flex-1 cursor-pointer border-white/10 bg-[#1a1a1a] font-semibold text-gray-300 transition-colors hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-30 sm:flex-none"
                 disabled={!pagination.hasPrev}
+                variant="outline"
                 onClick={pagination.onPrev}
               >
                 Anterior
-              </button>
-              <button
-                className="cursor-pointer rounded-md border border-white/10 bg-[#1a1a1a] px-4 py-2 text-xs font-semibold text-gray-300 transition-colors hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-30"
+              </Button>
+              <Button
+                className="flex-1 cursor-pointer border-white/10 bg-[#1a1a1a] font-semibold text-gray-300 transition-colors hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-30 sm:flex-none"
                 disabled={!pagination.hasNext}
+                variant="outline"
                 onClick={pagination.onNext}
               >
                 Siguiente
-              </button>
+              </Button>
             </div>
           </div>
         )}
